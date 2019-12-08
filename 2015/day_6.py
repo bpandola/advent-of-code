@@ -1,5 +1,3 @@
-
-
 def parse_instruction(instruction):
     tokens = instruction.split(' ')
     instruction = tokens[0] if tokens[0] != 'turn' else tokens[1]
@@ -45,7 +43,7 @@ if __name__ == '__main__':
     rows = display_lights(['turn on 0,0 through 999,999'])
     assert sum(sum(row) for row in rows) == 1000000
 
-    print sum(sum(row) for row in display_lights(puzzle_input))
+    print(sum(sum(row) for row in display_lights(puzzle_input)))
 
     # Part 2
-    print sum(sum(row) for row in display_lights_with_brightness(puzzle_input))
+    print(sum(sum(row) for row in display_lights_with_brightness(puzzle_input)))

@@ -69,7 +69,7 @@ if __name__ == '__main__':
     assert run_program([3, 0, 4, 0, 99], 99) == [99]
     assert run_program([1002, 4, 3, 4, 33]) == [1002, 4, 3, 4, 99]
 
-    print run_program(puzzle_input, 1)
+    print(run_program(puzzle_input, 1))
 
     # Part 2
     assert run_program([3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8], 8) == [1]
@@ -98,4 +98,4 @@ if __name__ == '__main__':
         [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20,
          4, 20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99], 9) == [1001]
 
-    print run_program(puzzle_input, 5)
+    print(run_program(puzzle_input, 5))

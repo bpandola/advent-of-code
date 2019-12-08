@@ -82,9 +82,9 @@ if __name__ == '__main__':
     assert run_circuit(example, 'x') == 123
     assert run_circuit(example, 'y') == 456
 
-    print run_circuit(puzzle_input, 'a')
+    print(run_circuit(puzzle_input, 'a'))
 
     # Part 2
     puzzle_input = open('day_7.in').read().replace('44430 -> b', '3176 -> b').split('\n')
 
-    print run_circuit(puzzle_input, 'a')
+    print(run_circuit(puzzle_input, 'a'))

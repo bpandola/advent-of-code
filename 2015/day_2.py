@@ -1,6 +1,3 @@
-from functools import reduce
-
-
 def dimension_string_to_dict(dimension_string):
     return {
         'length': int(dimension_string.split('x')[0]),
@@ -25,10 +22,10 @@ def calculate_paper_needed(dimensions):
 
 
 def calculate_ribbon_needed(dimensions):
-    dimensions = dimension_string_to_dict(dimensions).values()
+    dimensions = list(dimension_string_to_dict(dimensions).values())
     side_lengths = sorted(dimensions)
     ribbon = (side_lengths[0] * 2) + (side_lengths[1] * 2)
-    bow = reduce((lambda x, y: x * y), dimensions)
+    bow = dimensions[0] * dimensions[1] * dimensions[2]
     return ribbon + bow
 
 
@@ -39,10 +36,10 @@ if __name__ == '__main__':
     assert calculate_paper_needed('2x3x4') == 58
     assert calculate_paper_needed('1x1x10') == 43
 
-    print sum([calculate_paper_needed(d) for d in puzzle_input])
+    print(sum([calculate_paper_needed(d) for d in puzzle_input]))
 
     # Part 2
     assert calculate_ribbon_needed('2x3x4') == 34
     assert calculate_ribbon_needed('1x1x10') == 14
 
-    print sum([calculate_ribbon_needed(d) for d in puzzle_input])
+    print(sum([calculate_ribbon_needed(d) for d in puzzle_input]))

@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     p1 = calculate_wire_points(puzzle_input[0])
     p2 = calculate_wire_points(puzzle_input[1])
-    print find_shortest_intersection_distance(p1, p2)
+    print(find_shortest_intersection_distance(p1, p2))
 
     # Part 2
     wires = [
@@ -70,4 +70,4 @@ if __name__ == '__main__':
 
     p1 = calculate_wire_points(puzzle_input[0])
     p2 = calculate_wire_points(puzzle_input[1])
-    print find_intersection_with_fewest_steps(p1, p2)
+    print(find_intersection_with_fewest_steps(p1, p2))

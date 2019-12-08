@@ -1,5 +1,3 @@
-
-
 def follow_directions(directions, starting_floor=0):
     floor_on = starting_floor
     entered_basement_index = 0
@@ -32,10 +30,10 @@ if __name__ == '__main__':
     assert get_floor_on('())') == get_floor_on('))(') == -1
     assert get_floor_on(')))') == get_floor_on(')())())') == -3
 
-    print get_floor_on(puzzle_input)
+    print(get_floor_on(puzzle_input))
 
     # Part 2
     assert get_entered_basement_index(')') == 1
     assert get_entered_basement_index('()())') == 5
 
-    print get_entered_basement_index(puzzle_input)
+    print(get_entered_basement_index(puzzle_input))

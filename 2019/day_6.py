@@ -9,7 +9,7 @@ def build_graph(data):
 
 def num_orbits(graph, key):
     count = 0
-    for mass, satellites in graph.iteritems():
+    for mass, satellites in graph.items():
         if key in satellites:
             count += 1
             count += num_orbits(graph, mass)
@@ -18,7 +18,7 @@ def num_orbits(graph, key):
 
 def get_all_objects(graph):
     objs = []
-    for mass, satellites in graph.iteritems():
+    for mass, satellites in graph.items():
         objs.append(mass)
         objs.extend(satellites)
     return set(objs)
@@ -33,7 +33,7 @@ def count_orbits(graph):
 
 
 def get_mass(graph, satellite):
-    for mass, satellites in graph.iteritems():
+    for mass, satellites in graph.items():
         if satellite in satellites:
             return mass
     return None
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     assert num_orbits(sample_graph, 'COM') == 0
     assert count_orbits(build_graph(sample)) == 42
 
-    print count_orbits(build_graph(puzzle_input))
+    print(count_orbits(build_graph(puzzle_input)))
 
     # Part 2
     sample = [
@@ -102,4 +102,4 @@ if __name__ == '__main__':
     ]
     assert count_orbital_transfers(build_graph(sample), 'YOU', 'SAN') == 4
 
-    print count_orbital_transfers(build_graph(puzzle_input), 'YOU', 'SAN')
+    print(count_orbital_transfers(build_graph(puzzle_input), 'YOU', 'SAN'))

@@ -20,20 +20,20 @@ if __name__ == '__main__':
             fewest_zeros = num_zeros
             checksum = layer.count(1) * layer.count(2)
 
-    print checksum
+    print(checksum)
 
     # Part 2
     image = ''
     for i in range(IMAGE_WIDTH * IMAGE_HEIGHT):
-        pixel = 'not rendered'
-        for layer in range(len(puzzle_input) / (IMAGE_WIDTH * IMAGE_HEIGHT) - 1, -1, -1):
+        pixel = None
+        for layer in range(len(puzzle_input) // (IMAGE_WIDTH * IMAGE_HEIGHT) - 1, -1, -1):
             p = puzzle_input[layer * IMAGE_HEIGHT * IMAGE_WIDTH + i]
             if p == 0:
                 pixel = ' '
             elif p == 1:
                 pixel = '|'
-        assert pixel != 'not rendered'
+        assert pixel is not None
         image = image + pixel
 
     for i in range(IMAGE_HEIGHT):
-        print image[i * IMAGE_WIDTH:(i + 1) * IMAGE_WIDTH]
+        print(image[i * IMAGE_WIDTH:(i + 1) * IMAGE_WIDTH])

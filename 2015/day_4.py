@@ -4,7 +4,7 @@ import hashlib
 def calculate_lowest_hash_input_to_get_prefix(secret, prefix):
     i = 1
     while True:
-        result = hashlib.md5(bytes(secret + str(i))).hexdigest()
+        result = hashlib.md5((secret + str(i)).encode()).hexdigest()
         if result.startswith(prefix):
             break
         i += 1
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     assert calculate_lowest_hash_input_to_get_prefix('abcdef', '00000') == 609043
     assert calculate_lowest_hash_input_to_get_prefix('pqrstuv', '00000') == 1048970
 
-    print calculate_lowest_hash_input_to_get_prefix(puzzle_input, '00000')
+    print(calculate_lowest_hash_input_to_get_prefix(puzzle_input, '00000'))
 
     # Part 2
-    print calculate_lowest_hash_input_to_get_prefix(puzzle_input, '000000')
+    print(calculate_lowest_hash_input_to_get_prefix(puzzle_input, '000000'))

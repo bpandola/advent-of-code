@@ -21,7 +21,7 @@ if __name__ == '__main__':
     assert run_program([1, 0, 0, 0, 99]) == [2, 0, 0, 0, 99]
     assert run_program([1, 1, 1, 4, 99, 5, 6, 0, 99]) == [30, 1, 1, 4, 2, 5, 6, 0, 99]
 
-    print run_program(list(puzzle_input))[0]
+    print(run_program(list(puzzle_input))[0])
 
     # Part 2
     for noun in range(0, 100):
@@ -31,5 +31,5 @@ if __name__ == '__main__':
             code[2] = verb
             output = run_program(code)[0]
             if output == 19690720:
-                print 100 * noun + verb
+                print(100 * noun + verb)
                 break

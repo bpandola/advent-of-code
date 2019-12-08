@@ -149,7 +149,12 @@ if __name__ == '__main__':
         phase_settings=[1, 0, 4, 3, 2]
     ) == 65210
 
-    print max([run_amplifiers_in_series(puzzle_input, combo) for combo in generate_permutations(0, 4)])
+    print(
+        max([
+            run_amplifiers_in_series(puzzle_input, combo)
+            for combo in generate_permutations(0, 4)
+        ])
+    )
 
     # Part 2
     assert run_amplifiers_in_loop(
@@ -169,4 +174,9 @@ if __name__ == '__main__':
         phase_settings=[9, 7, 8, 5, 6]
     ) == 18216
 
-    print max([run_amplifiers_in_loop(puzzle_input, combo) for combo in generate_permutations(5, 9)])
+    print(
+        max([
+            run_amplifiers_in_loop(puzzle_input, combo)
+            for combo in generate_permutations(5, 9)
+        ])
+    )

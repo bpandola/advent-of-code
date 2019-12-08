@@ -37,11 +37,11 @@ if __name__ == '__main__':
     assert len(set(calculate_houses_visited('^>v<'))) == 4
     assert len(set(calculate_houses_visited('^v^v^v^v^v'))) == 2
 
-    print len(set(calculate_houses_visited(puzzle_input)))
+    print(len(set(calculate_houses_visited(puzzle_input))))
 
     # Part 2
     assert len(set(calculate_houses_visited_with_robot('^v'))) == 3
     assert len(set(calculate_houses_visited_with_robot('^>v<'))) == 3
     assert len(set(calculate_houses_visited_with_robot('^v^v^v^v^v'))) == 11
 
-    print len(set(calculate_houses_visited_with_robot(puzzle_input)))
+    print(len(set(calculate_houses_visited_with_robot(puzzle_input))))

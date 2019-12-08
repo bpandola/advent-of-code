@@ -26,11 +26,11 @@ if __name__ == '__main__':
     assert calculate_fuel_for_mass(1969) == 654
     assert calculate_fuel_for_mass(100756) == 33583
 
-    print sum([calculate_fuel_for_mass(m) for m in puzzle_input])
+    print(sum([calculate_fuel_for_mass(m) for m in puzzle_input]))
 
     # Part 2
     assert calculate_fuel_required(14) == 2
     assert calculate_fuel_required(1969) == 966
     assert calculate_fuel_required(100756) == 50346
 
-    print sum([calculate_fuel_required(m) for m in puzzle_input])
+    print(sum([calculate_fuel_required(m) for m in puzzle_input]))

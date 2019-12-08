@@ -19,7 +19,7 @@ def contains_double(password):
     dub_dict = {}
     for s in str(password):
         dub_dict[s] = dub_dict.get(s, 0) + 1
-    for key, value in dub_dict.iteritems():
+    for key, value in dub_dict.items():
         if value == 2:
             return True
     return False
@@ -59,11 +59,11 @@ if __name__ == '__main__':
     assert is_valid_password_v1(223450) is False
     assert is_valid_password_v1(123789) is False
 
-    print len(find_valid_passwords(puzzle_input))
+    print(len(find_valid_passwords(puzzle_input)))
 
     # Part 2
     assert is_valid_password_v2(112233) is True
     assert is_valid_password_v2(123444) is False
     assert is_valid_password_v2(111122) is True
 
-    print len(find_valid_passwords(puzzle_input, is_valid_password_v2))
+    print(len(find_valid_passwords(puzzle_input, is_valid_password_v2)))
