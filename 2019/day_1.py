@@ -1,8 +1,5 @@
-import math
-
-
 def calculate_fuel_for_mass(mass):
-    return math.floor(float(mass / 3)) - 2
+    return mass // 3 - 2
 
 
 def calculate_fuel_for_fuel(fuel_mass):
