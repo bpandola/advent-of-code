@@ -52,7 +52,7 @@ def find_valid_passwords(rng, f=is_valid_password_v1):
 
 
 if __name__ == '__main__':
-    puzzle_input = (246515, 739105)
+    puzzle_input = tuple([int(x) for x in open('day_4.in').read().split('-')])
 
     # Part 1
     assert is_valid_password_v1(111111) is True
