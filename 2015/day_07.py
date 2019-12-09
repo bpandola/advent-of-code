@@ -60,7 +60,7 @@ def run_circuit(instructions, output_wire):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_7.in').read().split('\n')
+    puzzle_input = open('day_07.in').read().split('\n')
 
     # Part 1
     example = [
@@ -85,6 +85,6 @@ if __name__ == '__main__':
     print(run_circuit(puzzle_input, 'a'))
 
     # Part 2
-    puzzle_input = open('day_7.in').read().replace('44430 -> b', '3176 -> b').split('\n')
+    puzzle_input = open('day_07.in').read().replace('44430 -> b', '3176 -> b').split('\n')
 
     print(run_circuit(puzzle_input, 'a'))

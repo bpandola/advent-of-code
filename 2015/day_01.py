@@ -22,7 +22,7 @@ def get_entered_basement_index(directions, starting_floor=0):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_1.in').read()
+    puzzle_input = open('day_01.in').read()
     # Part 1
     assert get_floor_on('(())') == get_floor_on('()()') == 0
     assert get_floor_on('(((') == get_floor_on('(()(()(') == 3

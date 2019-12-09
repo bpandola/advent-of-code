@@ -28,7 +28,7 @@ def find_intersection_with_fewest_steps(points1, points2):
 
 
 if __name__ == '__main__':
-    puzzle_input = [i.split(',') for i in open('day_3.in').read().split('\n')]
+    puzzle_input = [i.split(',') for i in open('day_03.in').read().split('\n')]
 
     # Part 1
     wires = [

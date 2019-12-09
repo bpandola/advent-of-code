@@ -115,7 +115,7 @@ def run_program(program, program_input=None):
 
 
 if __name__ == '__main__':
-    puzzle_input = [int(i) for i in open('day_9.in').read().split(',')]
+    puzzle_input = [int(i) for i in open('day_09.in').read().split(',')]
 
     # Part 1
     sample_program = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]

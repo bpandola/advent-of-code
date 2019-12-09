@@ -60,7 +60,7 @@ def count_orbital_transfers(graph, o1, o2):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_6.in').read().split('\n')
+    puzzle_input = open('day_06.in').read().split('\n')
 
     # Part 1
     sample = [

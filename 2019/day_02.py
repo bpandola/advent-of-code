@@ -14,7 +14,7 @@ def run_program(program):
 
 
 if __name__ == '__main__':
-    puzzle_input = [int(i) for i in open('day_2.in').read().split(',')]
+    puzzle_input = [int(i) for i in open('day_02.in').read().split(',')]
 
     # Part 1
     assert run_program([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50])

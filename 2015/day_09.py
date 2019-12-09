@@ -39,7 +39,7 @@ def generate_paths(nodes, edges):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_9.in').read().strip().split('\n')
+    puzzle_input = open('day_09.in').read().strip().split('\n')
 
     # Part 1
     sample_data = [

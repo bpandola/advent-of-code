@@ -37,7 +37,7 @@ def display_lights_with_brightness(instructions):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_6.in').read().split('\n')
+    puzzle_input = open('day_06.in').read().split('\n')
 
     # Part 1
     rows = display_lights(['turn on 0,0 through 999,999'])

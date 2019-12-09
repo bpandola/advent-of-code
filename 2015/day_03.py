@@ -30,7 +30,7 @@ def calculate_houses_visited_with_robot(directions):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_3.in').read()
+    puzzle_input = open('day_03.in').read()
 
     # Part 1
     assert len(set(calculate_houses_visited('>'))) == 2

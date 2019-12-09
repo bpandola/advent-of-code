@@ -3,7 +3,7 @@ IMAGE_HEIGHT = 6
 
 
 if __name__ == '__main__':
-    puzzle_input = [int(i) for i in open('day_8.in').read()]
+    puzzle_input = [int(i) for i in open('day_08.in').read()]
 
     # Part 1
     data = list(puzzle_input)

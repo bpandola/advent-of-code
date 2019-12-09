@@ -12,7 +12,7 @@ def calculate_lowest_hash_input_to_get_prefix(secret, prefix):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_4.in').read()
+    puzzle_input = open('day_04.in').read()
 
     # Part 1
     assert calculate_lowest_hash_input_to_get_prefix('abcdef', '00000') == 609043

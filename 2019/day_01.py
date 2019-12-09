@@ -18,7 +18,7 @@ def calculate_fuel_required(mass):
 
 
 if __name__ == '__main__':
-    puzzle_input = [int(i) for i in open('day_1.in').read().split('\n')]
+    puzzle_input = [int(i) for i in open('day_01.in').read().split('\n')]
 
     # Part 1
     assert calculate_fuel_for_mass(12) == 2

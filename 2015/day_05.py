@@ -38,7 +38,7 @@ def is_nice_v2(word):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_5.in').read().split('\n')
+    puzzle_input = open('day_05.in').read().split('\n')
 
     # Part 1
     assert is_nice_v1('ugknbfddgicrmopn') is True

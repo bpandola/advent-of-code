@@ -30,7 +30,7 @@ def calculate_ribbon_needed(dimensions):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_2.in').read().split('\n')
+    puzzle_input = open('day_02.in').read().split('\n')
 
     # Part 1
     assert calculate_paper_needed('2x3x4') == 58

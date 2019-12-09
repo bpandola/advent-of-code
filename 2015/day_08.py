@@ -40,7 +40,7 @@ def encode_string_length(code):
 
 
 if __name__ == '__main__':
-    puzzle_input = open('day_8.in').read().strip().split('\n')
+    puzzle_input = open('day_08.in').read().strip().split('\n')
 
     # Part 1
     assert calculate_string_length('"\\\\\\\\"') == (6, 2)

@@ -123,7 +123,7 @@ def generate_permutations(digit_start, digit_end):
 
 
 if __name__ == '__main__':
-    puzzle_input = [int(i) for i in open('day_7.in').read().split(',')]
+    puzzle_input = [int(i) for i in open('day_07.in').read().split(',')]
 
     # Part 1
     assert run_amplifiers_in_series(
