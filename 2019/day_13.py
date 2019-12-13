@@ -109,8 +109,8 @@ def run_program_async(program, **kwargs):
 def play_game(program, display_mode=False):
     screen = {}
     score = 0
-    ball_y, ball_x = 0, 0
-    paddle_y, paddle_x = 0, 0
+    ball_x = 0
+    paddle_x = 0
     state = run_program_async(program)
     while state['status'] != ProgState.HALTED:
         if state['status'] == ProgState.GENERATED_OUTPUT and len(state['program_output']) == 3:
@@ -121,9 +121,9 @@ def play_game(program, display_mode=False):
             else:
                 screen[(x, y)] = data
                 if data == 4:
-                    ball_x, ball_y = x, y
+                    ball_x = x
                 elif data == 3:
-                    paddle_x, paddle_y = x, y
+                    paddle_x = x
         elif state['status'] == ProgState.NEEDS_INPUT:
             joystick = -1 if ball_x < paddle_x else 1 if ball_x > paddle_x else 0
             state['program_input'].append(joystick)
@@ -134,14 +134,14 @@ def play_game(program, display_mode=False):
         state = run_program_async(**state)
     if display_mode:
         print('\rScore: {}'.format('0000{}'.format(score)[-4:]), end='\n')
-    return score, screen
+    return screen
 
 
 if __name__ == '__main__':
     puzzle_input = [int(i) for i in open('day_13.in').read().split(',')]
 
     # Part 1
-    _, game_screen = play_game(puzzle_input)
+    game_screen = play_game(puzzle_input)
     print(sum([1 for tile in game_screen.values() if tile == 2]))
 
     # Part 2
