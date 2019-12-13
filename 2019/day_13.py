@@ -106,7 +106,7 @@ def run_program_async(program, **kwargs):
             instr_ptr += 2
 
 
-def play_game(program):
+def play_game(program, display_mode=False):
     screen = {}
     score = 0
     ball_y, ball_x = 0, 0
@@ -127,7 +127,13 @@ def play_game(program):
         elif state['status'] == ProgState.NEEDS_INPUT:
             joystick = -1 if ball_x < paddle_x else 1 if ball_x > paddle_x else 0
             state['program_input'].append(joystick)
+        if display_mode and paddle_x:
+            display = '|                                      |'
+            display = display[:paddle_x] + '-' + display[paddle_x:]
+            print('\rScore: {} {}'.format('0000{}'.format(score)[-4:], display), end='')
         state = run_program_async(**state)
+    if display_mode:
+        print('\rScore: {}'.format('0000{}'.format(score)[-4:]), end='\n')
     return score, screen
 
 
@@ -140,5 +146,4 @@ if __name__ == '__main__':
 
     # Part 2
     puzzle_input[0] = 2
-    final_score, _ = play_game(puzzle_input)
-    print(final_score)
+    play_game(puzzle_input, display_mode=True)
