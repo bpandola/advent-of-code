@@ -1,4 +1,3 @@
-
 class OpCode:
     ADD = 1
     MULTIPLY = 2
@@ -107,181 +106,115 @@ def run_program_async(program, **kwargs):
             instr_ptr += 2
 
 
-def play_game(program):
+def map_area(program, display=True):
+    # Naive path finding algorithm.  Basically, just follow the right-hand rule
+    # and then follow the left-hand rule to map the entire area.
+    path_finding_map = [
+        [{'W': 'S', 'E': 'N', 'S': 'E', 'N': 'W', }, {'W': 'N', 'E': 'S', 'S': 'W', 'N': 'E', }],
+        [{'W': 'N', 'E': 'S', 'S': 'W', 'N': 'E', }, {'W': 'S', 'E': 'N', 'S': 'E', 'N': 'W', }],
+    ]
+    direction_to_input_code = {'N': 1, 'S': 2, 'W': 3, 'E': 4, }
     delta_x = {'N': 0, 'S': 0, 'W': -1, 'E': 1}
     delta_y = {'N': -1, 'S': 1, 'W': 0, 'E': 0}
-    direction_map = {
-        1: 'N',
-        2: 'S',
-        3: 'W',
-        4: 'E',
-
-        'N':1,
-        'S':2,
-        'W':3,
-        'E':4,
-    }
-    always_right_non_blocked = {
-        'W': 'N',
-        'E': 'S',
-        'S': 'W',
-        'N': 'E',
-    }
-    always_right_blocked = {
-        'W': 'S',
-        'E': 'N',
-        'S': 'E',
-        'N': 'W',
-    }
-    screen = {}
-    score = 0
-    bot_x, bot_y= 0,0
-    loc_x, loc_y = -1,-1
-    steps = [(bot_x, bot_y)]
-    dir_cur = 'E'  # Start going right
-    tries = [
-        [always_right_non_blocked, always_right_blocked],
-        [always_right_blocked, always_right_non_blocked],
-    ]
-    for i in range(2):
+    bot_x, bot_y = 0, 0
+    direction = 'E'
+    area_map = {(bot_x, bot_y): 'X'}
+    for path in range(len(path_finding_map)):
         bot_x, bot_y = 0, 0
         state = run_program_async(program)
         while state['status'] != ProgState.HALTED:
             if state['status'] == ProgState.GENERATED_OUTPUT:
-                output = state['program_output'].pop(0)
-                if output == 0:
+                output_code = state['program_output'].pop(0)
+                if output_code == 0:
                     # Hit a wall, position unchanged.
-                    x =bot_x + delta_x[dir_cur]
-                    y = bot_y + delta_y[dir_cur]
-                    screen[(x, y)] = '#'
-                    dir_cur = tries[i][0][dir_cur]
-                elif output == 1 or output == 2:
-                    # Moved one step in requested direction
-
-                    bot_x  += delta_x[dir_cur]
-                    bot_y += delta_y[dir_cur]
-                    screen[(bot_x, bot_y)] = '.'
-                    if (bot_x, bot_y) in steps:
-                        #screen[(bot_x, bot_y)] = ' '
-                        steps.pop(steps.index((bot_x, bot_y)))
-                    steps.append((bot_x, bot_y))
-
-                    # Try to stay right
-                    dir_cur = tries[i][1][dir_cur]
-                    if output == 2:
-                        # At location of oxygen system
-                        screen[(bot_x, bot_y)] = 'X'
-                        screen[(0,0)] = '*'
-                        loc_x, loc_y = bot_x, bot_y
+                    wall_x = bot_x + delta_x[direction]
+                    wall_y = bot_y + delta_y[direction]
+                    area_map[(wall_x, wall_y)] = '#'
+                    direction = path_finding_map[path][output_code][direction]
+                elif output_code in [1, 2]:
+                    # Moved one step in requested direction.
+                    bot_x += delta_x[direction]
+                    bot_y += delta_y[direction]
+                    area_map[(bot_x, bot_y)] = '.'
+                    # Found oxygen system.
+                    if output_code == 2:
+                        area_map[(bot_x, bot_y)] = 'O'
                         break
-
-                    print(bot_x, bot_y)
+                    direction = path_finding_map[path][output_code][direction]
             elif state['status'] == ProgState.NEEDS_INPUT:
-                state['program_input'].append(direction_map[dir_cur])
-
+                state['program_input'].append(direction_to_input_code[direction])
             state = run_program_async(**state)
-    for j in range(-25, 25, 1):
-        line = ''
-        for i in range(-25, 25, 1):
-            line += str(screen.get((i,j), '?'))
-        print(line)
+    normalized_data = []
+    x_min, x_max = min([x for (x, _) in area_map]), max([x for (x, _) in area_map])
+    y_min, y_max = min([y for (y, _) in area_map]), max([y for (y, _) in area_map])
+    for j in range(y_min, y_max + 1, 1):
+        normalized_data.append([area_map.get((i, j), '?') for i in range(x_min, x_max + 1, 1)])
+    if display:
+        print_map(normalized_data)
+    return normalized_data, (0 - x_min, 0 - y_min), (bot_x - x_min, bot_y - y_min)
 
-    print(steps[-1])
-    routes = [[(0,0)]]
 
-    def find_choices(x,y, x_prev, y_prev):
-        choices = []
-        valid = ['.','*','X']
-        possible_dir = ['N','S','E','W']
-        filtered_dir = possible_dir[:]
-        if x < x_prev:
-            filtered_dir.remove('E')
-        if x > x_prev:
-            filtered_dir.remove('W')
-        if y < y_prev:
-            filtered_dir.remove('S')
-        if y > y_prev:
-            filtered_dir.remove('N')
+def find_shortest_route(start, end, area):
+    dead_end = (-1, -1)
 
-        for d in filtered_dir:
-            check_x, check_y = x + delta_x[d], y + delta_y[d]
-            if screen.get((check_x,check_y), None) in valid:
-                choices.append(d)
-        return choices
+    def route_options(pos_cur, pos_prev):
+        options = []
+        x, y = pos_cur
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            check_x, check_y = x + dx, y + dy
+            if area[check_y][check_x] != '#' and (check_x, check_y) != pos_prev:
+                options.append((check_x, check_y))
+        return options if options else [dead_end]
 
-    while any(route[-1] not in [(loc_x, loc_y), (-100, -100) ]for route in routes):
-
+    routes = [[start]]
+    while any(route[-1] not in [end, dead_end] for route in routes):
         for route in routes:
-            (x, y) = route[-1]
-            (x_prev, y_prev) = route[-2] if len(route) > 1 else (x, y)
-            if (x, y) == (loc_x, loc_y):
+            if route[-1] in [end, dead_end]:
                 continue
-            direction_choices = find_choices(x, y, x_prev, y_prev)
-            if not direction_choices and route[-1] != (-100, -100):
-                route.append((-100, -100))
-                continue
-            for i, dir in enumerate(find_choices(x, y, x_prev, y_prev)):
-                next_step = (x + delta_x[dir], y+ delta_y[dir])
+            possible_next_steps = route_options(route[-1], route[-2] if len(route) > 1 else route[-1])
+            for i, position in enumerate(possible_next_steps):
+                next_step = position
                 if i == 0:
                     route.append(next_step)
                 else:
                     fork = route[:-1] + [next_step]
                     routes.append(fork)
+    return min([route.index(end) for route in routes if route[-1] == end])
 
 
-
-    min_length = [route for route in routes if route[-1] == (loc_x,loc_y)]
-    print(len(min_length[0])-1)
-
-    data = []
-    for j in range(min(y for (_, y) in screen), max(y for (_, y) in screen) + 1, 1):
-        for i in range(min(x for (x, _) in screen), max(x for (x, _) in screen) + 1, 1):
-            c = screen.get((i, j), '#')
-            c = '.' if c == '*' else 'O' if c == 'X' else c
-            data.append(c)
-    grid_length = 41
-    def pr_map(data, grid_length):
-        for i in range(grid_length):
-            print(''.join(data[i*grid_length:i*grid_length+grid_length]))
-    def do_spread(points, data):
-        new_spread_points = []
-        data = data[:]
-        def non_wall(x, y):
-            grid_length = 41
-            index = y*grid_length+x
-            if data[index:index+1] == ['.']:
-                data[index:index+1] = 'O'
-                new_spread_points.append((x, y))
-
-        for (x, y) in points:
-            non_wall(x-1,y)
-            non_wall(x+1,y)
-            non_wall(x, y-1)
-            non_wall(x, y+1)
-        return new_spread_points, data
-
-    # Find our starting oxygen.
-    y,x  = divmod(data.index('O'), grid_length)
-    spread_points = [(x,y)]
-    steps = 0
-    while True:
-        try:
-            data.index('.')
-        except ValueError:
-            # No more no oxygen
-            break
-        spread_points, data = do_spread(spread_points, data)
+def fill_area_with_oxygen(oxygen_coords, area, display=True):
+    step = 0
+    spread_points = [oxygen_coords]
+    while any(spot for row in area for spot in row if spot == '.'):
+        spread_points_new = []
+        for x, y in spread_points:
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                if area[y + dy][x + dx] == '.':
+                    area[y + dy][x + dx] = 'O'
+                    spread_points_new.append((x + dx, y + dy))
+        spread_points = spread_points_new
+        step += 1
+        if display:
+            print_map(area)
+            print(step)
+    return step
 
 
-        steps += 1
-        pr_map(data, grid_length)
-        print(steps)
-    return screen
+def print_map(map_data):
+    for line in range(len(map_data)):
+        print(''.join(map_data[line]))
 
 
 if __name__ == '__main__':
     puzzle_input = [int(i) for i in open('day_15.in').read().split(',')]
 
-    # Part 1
-    game_screen = play_game(puzzle_input)
+    display_mode = False
 
+    # Part 1
+    mapped_area, start_coords, o2_coords = map_area(puzzle_input, display=display_mode)
+    length = find_shortest_route(start_coords, o2_coords, mapped_area)
+    print(length)
+
+    # Part 2
+    num_steps = fill_area_with_oxygen(o2_coords, mapped_area, display=display_mode)
+    print(num_steps)
