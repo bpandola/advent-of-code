@@ -49,7 +49,6 @@ if __name__ == '__main__':
     ]
     graph = build_graph(sample_data)
     routes = generate_paths(graph[0], graph[1])
-    print([(k, v) for k, v in routes.items() if v == min(routes.values())])
     assert min(routes.values()) == 605
 
     graph = build_graph(puzzle_input)
