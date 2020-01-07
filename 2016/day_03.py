@@ -20,7 +20,7 @@ if __name__ == '__main__':
     for i in range(0, len(puzzle_input) - 2, 3):
         for j in range(3):
             sides = [
-                int(puzzle_input[i][j * 5:(j + 1) * 5]),
+                int(puzzle_input[i + 0][j * 5:(j + 1) * 5]),
                 int(puzzle_input[i + 1][j * 5:(j + 1) * 5]),
                 int(puzzle_input[i + 2][j * 5:(j + 1) * 5]),
             ]
