@@ -128,12 +128,13 @@ def play_game(program, display_mode=False):
             joystick = -1 if ball_x < paddle_x else 1 if ball_x > paddle_x else 0
             state['program_input'].append(joystick)
         if display_mode and paddle_x:
-            display = '|                                      |'
+            num_blocks = sum([1 for tile in screen.values() if tile == 2])
+            display = '|                                          |'
             display = display[:paddle_x] + '-' + display[paddle_x:]
-            print('\rScore: {} {}'.format('0000{}'.format(score)[-4:], display), end='')
+            print('\rScore: {} | Blocks: {} {}'.format(score, num_blocks, display), end='')
         state = run_program_async(**state)
     if display_mode:
-        print('\rScore: {}'.format('0000{}'.format(score)[-4:]), end='\n')
+        print('\rScore: {}'.format('00000{}'.format(score)[-5:]), end='\n')
     return screen
 
 
