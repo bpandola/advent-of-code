@@ -20,15 +20,15 @@ def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
         node = graph[chemical]
         needed = math.ceil(delta/node['quantity'])
         for i in node['ingredients']:
-            while True:
-                if i['chemical'] == 'ORE':
-                    calculate_ore_needed_faster(i['chemical'], (i['quantity'] * needed), graph, consumables)
-                    break
+            if i['chemical'] == 'ORE':
+                calculate_ore_needed_faster(i['chemical'], (i['quantity'] * needed), graph, consumables)
+            elif consumables[i['chemical']] >= (i['quantity'] * needed):
+                consumables[i['chemical']] -= (i['quantity'] * needed)
+            else:
+                calculate_ore_needed_faster(i['chemical'], (i['quantity']*needed), graph, consumables)
                 if consumables[i['chemical']] >= (i['quantity'] * needed):
                     consumables[i['chemical']] -= (i['quantity'] * needed)
-                    break
-                calculate_ore_needed_faster(i['chemical'], (i['quantity']*needed), graph, consumables)
-        consumables[chemical] = consumables[chemical] + (node['quantity'] * needed)
+        consumables[chemical] += (node['quantity'] * needed)
 
         available = consumables[chemical]
     return consumables
