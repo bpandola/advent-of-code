@@ -7,9 +7,11 @@ Reaction = collections.namedtuple('Reaction', 'chemical quantity ingredients')
 
 
 def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
+    consumables = consumables or defaultdict(int)
 
-    if consumables is None:
-        consumables = defaultdict(int)
+    if chemical == 'ORE':
+        consumables['ORE'] += amount
+        return
 
     available = consumables[chemical]
     while available < amount:
@@ -20,7 +22,7 @@ def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
         for i in node['ingredients']:
             while True:
                 if i['chemical'] == 'ORE':
-                    consumables['ORE'] = consumables['ORE'] + (i['quantity'] * needed)
+                    calculate_ore_needed_faster(i['chemical'], (i['quantity'] * needed), graph, consumables)
                     break
                 if consumables[i['chemical']] >= (i['quantity'] * needed):
                     consumables[i['chemical']] -= (i['quantity'] * needed)
