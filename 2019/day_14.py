@@ -22,8 +22,6 @@ def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
         for i in node['ingredients']:
             if i['chemical'] == 'ORE':
                 calculate_ore_needed_faster(i['chemical'], (i['quantity'] * needed), graph, consumables)
-            elif consumables[i['chemical']] >= (i['quantity'] * needed):
-                consumables[i['chemical']] -= (i['quantity'] * needed)
             else:
                 calculate_ore_needed_faster(i['chemical'], (i['quantity']*needed), graph, consumables)
                 if consumables[i['chemical']] >= (i['quantity'] * needed):
