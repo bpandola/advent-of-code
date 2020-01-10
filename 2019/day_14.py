@@ -1,35 +1,17 @@
 import collections
 import math
-import collections
+from collections import defaultdict
+
+
 Reaction = collections.namedtuple('Reaction', 'chemical quantity ingredients')
 
 
-def calculate_ore_needed_ref(chemical, amount, graph, consumables=None):
-    consumables = consumables if consumables is not None else {}
-
-    while consumables.get(chemical, 0) < amount:
-
-        # Don't have it; have to make it.
-        node = graph[chemical]
-        for i in node['ingredients']:
-            while True:
-                if i['chemical'] == 'ORE':
-                    consumables['ORE'] = consumables.get('ORE',0) + i['quantity']
-                    break
-                if i['chemical'] in consumables and consumables[i['chemical']] >= i['quantity']:
-                    consumables[i['chemical']] -= i['quantity']
-                    break
-                calculate_ore_needed_ref(i['chemical'], i['quantity'], graph, consumables)
-        consumables[chemical] = consumables.get(chemical, 0) + node['quantity']
-
-    return consumables
-
-
 def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
-    consumables = consumables if consumables is not None else {}
 
+    if consumables is None:
+        consumables = defaultdict(int)
 
-    available = consumables.get(chemical, 0)
+    available = consumables[chemical]
     while available < amount:
         delta = amount - available
         # Don't have it; have to make it.
@@ -38,15 +20,15 @@ def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
         for i in node['ingredients']:
             while True:
                 if i['chemical'] == 'ORE':
-                    consumables['ORE'] = consumables.get('ORE',0) + (i['quantity'] * needed)
+                    consumables['ORE'] = consumables['ORE'] + (i['quantity'] * needed)
                     break
-                if i['chemical'] in consumables and consumables[i['chemical']] >= (i['quantity'] * needed):
+                if consumables[i['chemical']] >= (i['quantity'] * needed):
                     consumables[i['chemical']] -= (i['quantity'] * needed)
                     break
                 calculate_ore_needed_faster(i['chemical'], (i['quantity']*needed), graph, consumables)
-        consumables[chemical] = consumables.get(chemical, 0) + (node['quantity'] * needed)
+        consumables[chemical] = consumables[chemical] + (node['quantity'] * needed)
 
-        available = consumables.get(chemical, 0)
+        available = consumables[chemical]
     return consumables
 
 
@@ -55,6 +37,7 @@ def calculate_ore_needed(chemical, amount, graph):
     result = calculate_ore_needed_faster(chemical, amount, graph)
     return result['ORE']
 
+
 def calculate_max_fuel(max_ore, graph):
     ore_remaining = max_ore
     fuel_generated = 0
@@ -62,9 +45,6 @@ def calculate_max_fuel(max_ore, graph):
     ore_needed = calculate_ore_needed('FUEL', 1, graph)
 
     consumables = calculate_ore_needed_faster('FUEL', max_ore/ore_needed, graph)
-
-    #consumables = calculate_ore_needed_faster('FUEL', 2074844, graph)
-
 
     while True:
 
@@ -80,8 +60,8 @@ def calculate_max_fuel(max_ore, graph):
             break
         consumables = calculate_ore_needed_faster('FUEL', 1, graph, consumables)
 
-
     return fuel_generated
+
 
 def parse_input2(data):
     reactions = []
