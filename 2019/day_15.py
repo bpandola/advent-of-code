@@ -208,13 +208,11 @@ def print_map(map_data):
 if __name__ == '__main__':
     puzzle_input = [int(i) for i in open('day_15.in').read().split(',')]
 
-    display_mode = False
-
     # Part 1
-    mapped_area, start_coords, o2_coords = map_area(puzzle_input, display=display_mode)
+    mapped_area, start_coords, o2_coords = map_area(puzzle_input, display=True)
     length = find_shortest_route(start_coords, o2_coords, mapped_area)
     print(length)
 
     # Part 2
-    num_steps = fill_area_with_oxygen(o2_coords, mapped_area, display=display_mode)
+    num_steps = fill_area_with_oxygen(o2_coords, mapped_area, display=False)
     print(num_steps)
