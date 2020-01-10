@@ -1,17 +1,28 @@
-import collections
 import math
 from collections import defaultdict
 
 
-Reaction = collections.namedtuple('Reaction', 'chemical quantity ingredients')
+def build_graph(data):
+    reactions = {}
+    for entity in data:
+        chain, output = entity.split(' => ')
+        output_amt, output_chem, = output.strip().split()
+        ingredients = []
+        for i in chain.split(','):
+            amount, name = i.strip().split(' ')
+            ingredients.append({'chemical': name, 'quantity': int(amount)})
+        reactions[output_chem] = {
+            'quantity': int(output_amt),
+            'ingredients': ingredients
+        }
+    return reactions
 
 
-def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
+def calculate_ore_needed(chemical, amount, reactions, consumables=None):
     consumables = consumables or defaultdict(int)
 
     if chemical == 'ORE':
-        consumables['ORE'] += amount
-        return
+        return amount
 
     if amount <= consumables[chemical]:
         consumables[chemical] -= amount
@@ -20,74 +31,34 @@ def calculate_ore_needed_faster(chemical, amount, graph, consumables=None):
         amount -= consumables[chemical]
         consumables[chemical] = 0
 
-    node = graph[chemical]
-    needed = math.ceil(amount / node['quantity'])
+    reaction = reactions[chemical]
+    needed = math.ceil(amount / reaction['quantity'])
 
-    for i in node['ingredients']:
-        calculate_ore_needed_faster(i['chemical'], (i['quantity'] * needed), graph, consumables)
+    ore = 0
+    for i in reaction['ingredients']:
+        ore += calculate_ore_needed(i['chemical'], (i['quantity'] * needed), reactions, consumables)
 
-    consumables[chemical] += (node['quantity'] * needed - amount)
+    consumables[chemical] += (reaction['quantity'] * needed - amount)
 
-    return consumables
-
-
-def calculate_ore_needed(chemical, amount, graph):
-    result = calculate_ore_needed_faster(chemical, amount, graph)
-    return result['ORE']
+    return ore
 
 
 def calculate_max_fuel(max_ore, graph):
-    ore_remaining = max_ore
-    fuel_generated = 0
+    lower = 0
+    upper = max_ore
 
-    ore_needed = calculate_ore_needed('FUEL', 1, graph)
+    while lower + 1 < upper:
+        mid = lower + ((upper - lower) // 2)
+        ore = calculate_ore_needed('FUEL', mid, graph)
 
-    consumables = calculate_ore_needed_faster('FUEL', max_ore/ore_needed, graph)
+        if ore > max_ore:
+            upper = mid
+        elif ore < max_ore:
+            lower = mid
+        else:
+            return mid
 
-    while True:
-
-        fuel_generated += consumables.pop('FUEL')
-        ore_remaining -= consumables.pop('ORE')
-
-        if sum(consumables.values()) == 0:
-            fuel_generated = ((max_ore // (max_ore - ore_remaining)) * fuel_generated)
-            ore_remaining = (max_ore % (max_ore - ore_remaining))
-        print(ore_remaining)
-        if ore_remaining < 0:
-            fuel_generated -= 1
-            break
-        consumables = calculate_ore_needed_faster('FUEL', 1, graph, consumables)
-
-    return fuel_generated
-
-
-def parse_input2(data):
-    reactions = []
-    for entity in data:
-        chain, output = entity.split('=>')
-        output_amt, output_chem, = output.strip().split(' ')
-        ingredients = []
-        for i in chain.split(','):
-            amount, name = i.strip().split(' ')
-            r = Reaction(chemical=name, quantity=int(amount), ingredients=[])
-            ingredients.append(r)
-        reaction = Reaction(chemical=output_chem, quantity=int(output_amt), ingredients=ingredients)
-        reactions.append(reaction)
-    return reactions
-
-
-def parse_input(data):
-    reactions = parse_input2(data)
-    graph = {}
-
-    for r in reactions:
-        assert r.chemical not in graph
-        graph[r.chemical] = {
-            'quantity': r.quantity,
-            'ingredients': [{'chemical': i.chemical, 'quantity': i.quantity} for i in r.ingredients]
-        }
-
-    return graph
+    return lower
 
 
 if __name__ == '__main__':
@@ -102,7 +73,7 @@ if __name__ == '__main__':
         '7 A, 1 D => 1 E',
         '7 A, 1 E => 1 FUEL',
     ]
-    assert calculate_ore_needed('FUEL',1,parse_input(sample_1)) == 31
+    assert calculate_ore_needed('FUEL', 1, build_graph(sample_1)) == 31
 
     sample_2 = [
         '9 ORE => 2 A',
@@ -113,7 +84,7 @@ if __name__ == '__main__':
         '4 C, 1 A => 1 CA',
         '2 AB, 3 BC, 4 CA => 1 FUEL',
     ]
-    assert calculate_ore_needed('FUEL', 1,parse_input(sample_2)) == 165
+    assert calculate_ore_needed('FUEL', 1, build_graph(sample_2)) == 165
 
     sample_3 = [
         '157 ORE => 5 NZVS',
@@ -126,7 +97,7 @@ if __name__ == '__main__':
         '165 ORE => 2 GPVTF',
         '3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT',
     ]
-    assert calculate_ore_needed('FUEL', 1,parse_input(sample_3)) == 13312
+    assert calculate_ore_needed('FUEL', 1, build_graph(sample_3)) == 13312
 
     sample_4 = [
         '2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG',
@@ -142,7 +113,7 @@ if __name__ == '__main__':
         '1 VJHF, 6 MNCFX => 4 RFSQX',
         '176 ORE => 6 VJHF',
     ]
-    assert calculate_ore_needed('FUEL',1, parse_input(sample_4)) == 180697
+    assert calculate_ore_needed('FUEL', 1, build_graph(sample_4)) == 180697
 
     sample_5 = [
         '171 ORE => 8 CNZTR',
@@ -163,13 +134,13 @@ if __name__ == '__main__':
         '7 XCVML => 6 RJRHP',
         '5 BHXH, 4 VRPVC => 5 LTCX',
     ]
-    assert calculate_ore_needed('FUEL', 1, parse_input(sample_5)) == 2210736
+    assert calculate_ore_needed('FUEL', 1, build_graph(sample_5)) == 2210736
 
-    print(calculate_ore_needed('FUEL',1, parse_input(puzzle_input)))
+    print(calculate_ore_needed('FUEL', 1, build_graph(puzzle_input)))
 
     # Part 2
-    assert calculate_max_fuel(1000000000000, parse_input(sample_3)) == 82892753
-    assert calculate_max_fuel(1000000000000, parse_input(sample_4)) == 5586022
-    assert calculate_max_fuel(1000000000000, parse_input(sample_5)) == 460664
+    assert calculate_max_fuel(1000000000000, build_graph(sample_3)) == 82892753
+    assert calculate_max_fuel(1000000000000, build_graph(sample_4)) == 5586022
+    assert calculate_max_fuel(1000000000000, build_graph(sample_5)) == 460664
 
-    print(calculate_max_fuel(1000000000000, parse_input(puzzle_input)))
+    print(calculate_max_fuel(1000000000000, build_graph(puzzle_input)))
