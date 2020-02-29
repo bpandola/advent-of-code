@@ -1,3 +1,6 @@
+from collections import defaultdict
+
+
 class OpCode:
     ADD = 1
     MULTIPLY = 2
@@ -123,48 +126,116 @@ def map_area(program, display=False):
             if line:
                 area.append(line)
                 line = []
-
         else:
             line.append(chr(i))
 
     if display:
         for line in area:
             print(''.join(line))
-    return area
+
+    # Translate into a more convenient data structure.
+    # defaultdict[(x, y)] = data; default is '.'
+    translated = defaultdict(lambda: '.')
+    robot_coords = (0, 0)
+    for y, line in enumerate(area):
+        for x, data in enumerate(area[y]):
+            if data == '#':
+                translated[(x, y)] = data
+            elif data in ['^', 'v', '<', '>']:
+                translated[(x, y)] = data
+                robot_coords = (x, y)
+    return translated, robot_coords
 
 
-def find_scaffold_intersections(area_map):
-    area = area_map[:]
+def find_scaffold_intersections(area_map, display=False):
+    area = area_map.copy()
 
     def is_intersection(x, y):
-        if area[y][x] != '#':
+        if area[(x,y)] != '#':
             return False
-        if x > 0 and area[y][x-1] != '#':
+        if area[(x-1, y)] != '#':
             return False
-        if x < len(area[y])-1 and area[y][x+1] != '#':
+        if area[(x+1,y)] != '#':
             return False
-        if y > 0 and area[y-1][x] != '#':
+        if area[(x,y-1)] != '#':
             return False
-        if y < len(area)-1 and area[y+1][x] != '#':
+        if area[(x,y+1)] != '#':
             return False
         return True
 
     alignment_sum = 0
-    for y in range(len(area)):
-        for x in range(len(area[y])):
-            if is_intersection(x, y):
-                area[y][x] = 'O'
-                alignment_sum += x * y
+    for coords in list(area.keys()):
+        if is_intersection(*coords):
+            area[coords] = 'O'
+            alignment_sum += coords[0] * coords[1]
 
-    for line in area:
-        print(''.join(line))
+    if display:
+        print_map(area)
 
     return alignment_sum
 
 
-def print_map(map_data):
-    for line in range(len(map_data)):
-        print(''.join(map_data[line]))
+def print_map(area_map):
+    x_min, x_max = min(x for (x, _) in area_map), max(x for (x, _) in area_map)
+    y_min, y_max = min(y for (_, y) in area_map), max(y for (_, y) in area_map)
+    for j in range(y_min, y_max + 1, 1):
+        row = ''
+        for i in range(x_min, x_max + 1, 1):
+            row += area_map[(i, j)]
+        print(row)
+
+
+def plan_route(area_map, robot_pos):
+    robot_to_direction_map = {
+        '^':'U',
+        'v': 'D',
+        '<': 'L',
+        '>': 'R',
+    }
+    direction_to_turn = {
+        'U': {'L': 'L', 'R': 'R'},
+        'D': {'L': 'R', 'R': 'L'},
+        'L': {'D': 'L', 'U': 'R'},
+        'R': {'U': 'L', 'D': 'R'},
+    }
+    direction_opposite = {
+        'U': 'D',
+        'D': 'U',
+        'L': 'R',
+        'R': 'L',
+    }
+    delta_x = {'L': -1, 'R': 1, 'U': 0, 'D': 0}
+    delta_y = {'L': 0, 'R': 0, 'U': -1, 'D': 1}
+    x, y = robot_pos
+    direction = robot_to_direction_map[area_map[robot_pos]]
+
+    def find_turn(x, y, direction):
+        t = None
+        for d in ['L', 'R', 'D', 'U']:
+            if d in [direction, direction_opposite[direction]]:
+                continue
+            if area_map[(x + delta_x[d], y + delta_y[d])] == '#':
+                t= direction_to_turn[direction][d]
+                break
+        return t, d
+
+    instructions = []
+    index = 0
+    while True:
+        if area_map[(x + delta_x[direction], y + delta_y[direction])] != '#':
+            # We are blocked.
+            turn, direction = find_turn(x, y, direction)
+            if index:
+                instructions.append(index)
+            if turn is None:
+                break
+            instructions.append(turn)
+            index = 0
+        else:
+            x += delta_x[direction]
+            y += delta_y[direction]
+            index += 1
+    return instructions
 
 
 if __name__ == '__main__':
@@ -173,7 +244,8 @@ if __name__ == '__main__':
     display_mode = True
 
     # Part 1
-    result = map_area(puzzle_input, display=display_mode)
-    print(find_scaffold_intersections(result))
+    result, robot_position = map_area(puzzle_input, display=display_mode)
+    print(find_scaffold_intersections(result, display_mode))
 
     # Part 2
+    plan_route(result, robot_position)
