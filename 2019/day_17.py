@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 
 
@@ -233,25 +234,29 @@ def get_scaffold_path(area_map, robot_pos):
     return instructions
 
 
-def compress_path(path):
-    path = ''.join([str(i) for i in path])
-    sentinel = '*'
+def compress_path(instructions):
+    path = ''.join([str(i) for i in instructions])
+    sequence_markers = 'ABCDEF'
     sequences = []
     sequence_start, sequence_end = 0, 0
-    while any([c != sentinel for c in path]):
-        if path[sequence_start] == sentinel:
+    while any([c not in sequence_markers for c in path]):
+        if path[sequence_start] in sequence_markers:
             sequence_start += 1
             sequence_end += 1
             continue
-        elif path[sequence_end] == sentinel:
+        elif path[sequence_end] in sequence_markers:
             sequence_end += 1
         elif path[sequence_start:sequence_end] in path[sequence_end:]:
             sequence_end += 1
             continue
         sequences.append(path[sequence_start:sequence_end-1])
+        path = path.replace(sequences[-1], sequence_markers[len(sequences)-1])
         sequence_start = sequence_end = 0
-        path = path.replace(sequences[-1], sentinel)
-    return sequences
+    # Translate our compressed path into the expected format.
+    move = re.compile('([LR])([0-9]+)')
+    movement_routine = ','.join(path)
+    movement_functions = [','.join([f'{m[0]},{m[1]}' for m in move.findall(s)]) for s in sequences]
+    return movement_routine, movement_functions
 
 
 if __name__ == '__main__':
@@ -266,9 +271,11 @@ if __name__ == '__main__':
 
     # Part 2
     route = get_scaffold_path(scaffold_map, robot_position)
-    print(route)
-    compress_path(route)
-    puzzle_input[0] = 2
-    cs = 'A,B,A,C,B,A,C,B,A,C\nL,12,L,12,L,6,L,6\nR,8,R,4,L,12\nL,12,L,6,R,12,R,8\nn\n'
-    inp = [ord(c) for c in cs]
-    print(run_program(puzzle_input, inp)['program_output'][-1])
+    compressed_path, segments = compress_path(route)
+    path_functions = '\n'.join(segments)
+    vacuum_program = puzzle_input[:]
+    vacuum_program[0] = 2
+    video_feed = 'n'  # y or n
+    robot_input = f'{compressed_path}\n{path_functions}\n{video_feed}\n'
+    robot_input = [ord(c) for c in robot_input]
+    print(run_program(vacuum_program, robot_input)['program_output'][-1])
