@@ -151,15 +151,15 @@ def find_scaffold_intersections(area_map, display=False):
     area = area_map.copy()
 
     def is_intersection(x, y):
-        if area[(x,y)] != '#':
+        if area[(x, y)] != '#':
             return False
-        if area[(x-1, y)] != '#':
+        if area[(x - 1, y)] != '#':
             return False
-        if area[(x+1,y)] != '#':
+        if area[(x + 1, y)] != '#':
             return False
-        if area[(x,y-1)] != '#':
+        if area[(x, y - 1)] != '#':
             return False
-        if area[(x,y+1)] != '#':
+        if area[(x, y + 1)] != '#':
             return False
         return True
 
@@ -185,46 +185,41 @@ def print_map(area_map):
         print(row)
 
 
-def plan_route(area_map, robot_pos):
-    robot_to_direction_map = {
-        '^':'U',
-        'v': 'D',
-        '<': 'L',
-        '>': 'R',
-    }
-    direction_to_turn = {
-        'U': {'L': 'L', 'R': 'R'},
-        'D': {'L': 'R', 'R': 'L'},
-        'L': {'D': 'L', 'U': 'R'},
-        'R': {'U': 'L', 'D': 'R'},
-    }
-    direction_opposite = {
-        'U': 'D',
-        'D': 'U',
-        'L': 'R',
-        'R': 'L',
-    }
+def get_scaffold_path(area_map, robot_pos):
     delta_x = {'L': -1, 'R': 1, 'U': 0, 'D': 0}
     delta_y = {'L': 0, 'R': 0, 'U': -1, 'D': 1}
+    robot_to_direction_map = {'^': 'U', 'v': 'D', '<': 'L', '>': 'R', }
+    current_direction = robot_to_direction_map[area_map[robot_pos]]
     x, y = robot_pos
-    direction = robot_to_direction_map[area_map[robot_pos]]
 
-    def find_turn(x, y, direction):
-        t = None
-        for d in ['L', 'R', 'D', 'U']:
-            if d in [direction, direction_opposite[direction]]:
+    def find_turn():
+        direction_to_turn = {
+            'U': {'L': 'L', 'R': 'R'},
+            'D': {'L': 'R', 'R': 'L'},
+            'L': {'D': 'L', 'U': 'R'},
+            'R': {'U': 'L', 'D': 'R'},
+        }
+        opposite_direction = {
+            'U': 'D',
+            'D': 'U',
+            'L': 'R',
+            'R': 'L',
+        }
+        turn_direction = None
+        for heading in ['L', 'R', 'D', 'U']:
+            if heading in [current_direction, opposite_direction[current_direction]]:
                 continue
-            if area_map[(x + delta_x[d], y + delta_y[d])] == '#':
-                t= direction_to_turn[direction][d]
+            if area_map[(x + delta_x[heading], y + delta_y[heading])] == '#':
+                turn_direction = direction_to_turn[current_direction][heading]
                 break
-        return t, d
+        return turn_direction, heading
 
     instructions = []
     index = 0
     while True:
-        if area_map[(x + delta_x[direction], y + delta_y[direction])] != '#':
+        if area_map[(x + delta_x[current_direction], y + delta_y[current_direction])] != '#':
             # We are blocked.
-            turn, direction = find_turn(x, y, direction)
+            turn, current_direction = find_turn()
             if index:
                 instructions.append(index)
             if turn is None:
@@ -232,10 +227,31 @@ def plan_route(area_map, robot_pos):
             instructions.append(turn)
             index = 0
         else:
-            x += delta_x[direction]
-            y += delta_y[direction]
+            x += delta_x[current_direction]
+            y += delta_y[current_direction]
             index += 1
     return instructions
+
+
+def compress_path(path):
+    path = ''.join([str(i) for i in path])
+    sentinel = '*'
+    sequences = []
+    sequence_start, sequence_end = 0, 0
+    while any([c != sentinel for c in path]):
+        if path[sequence_start] == sentinel:
+            sequence_start += 1
+            sequence_end += 1
+            continue
+        elif path[sequence_end] == sentinel:
+            sequence_end += 1
+        elif path[sequence_start:sequence_end] in path[sequence_end:]:
+            sequence_end += 1
+            continue
+        sequences.append(path[sequence_start:sequence_end-1])
+        sequence_start = sequence_end = 0
+        path = path.replace(sequences[-1], sentinel)
+    return sequences
 
 
 if __name__ == '__main__':
@@ -243,9 +259,16 @@ if __name__ == '__main__':
 
     display_mode = True
 
+    scaffold_map, robot_position = map_area(puzzle_input, display_mode)
+
     # Part 1
-    result, robot_position = map_area(puzzle_input, display=display_mode)
-    print(find_scaffold_intersections(result, display_mode))
+    print(find_scaffold_intersections(scaffold_map, display_mode))
 
     # Part 2
-    plan_route(result, robot_position)
+    route = get_scaffold_path(scaffold_map, robot_position)
+    print(route)
+    compress_path(route)
+    puzzle_input[0] = 2
+    cs = 'A,B,A,C,B,A,C,B,A,C\nL,12,L,12,L,6,L,6\nR,8,R,4,L,12\nL,12,L,6,R,12,R,8\nn\n'
+    inp = [ord(c) for c in cs]
+    print(run_program(puzzle_input, inp)['program_output'][-1])
