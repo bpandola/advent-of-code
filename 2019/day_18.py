@@ -70,7 +70,71 @@ def get_viable_routes(area, pos, keys, routes=None):
     return key_routes
 
 
+
+
+def dfs(graph, doors, keys, path, viable_routes=None):
+    viable_routes = viable_routes or []
+    def get_viable_moves(steps):
+        moves = []
+        possible_moves = []
+        px, py = steps[-1]
+        if graph[(px - 1, py)] != '#':
+            possible_moves.append((px - 1, py))
+        if graph[(px + 1, py)] != '#':
+            possible_moves.append((px + 1, py))
+        if graph[(px, py - 1)] != '#':
+            possible_moves.append((px, py - 1))
+        if graph[(px, py + 1)] != '#':
+            possible_moves.append((px, py + 1))
+        for move in possible_moves:
+            if len(steps) > 1 and move == steps[-2]:
+                if graph[steps[-1]] in string.ascii_lowercase:
+                    if steps.count(steps[-1]) == 1:
+                        # continue  # no backtracking unless we're standing on a key/door for first time
+                        if set(keys.values()) - set(steps):
+                            moves.append(move)
+            elif graph[move] in string.ascii_uppercase:
+                key = str(graph[move]).lower()
+                key_pos = keys[key]
+                if key_pos in steps:
+                    moves.append(move)
+            else:
+                # Free spot or key
+                moves.append(move)
+        return moves
+
+    moves = get_viable_moves(path)
+    while len(moves) == 1:
+        path += moves
+        moves = get_viable_moves(path)
+    # moves = []
+    shortest = min([len(p) for p in viable_routes]) if viable_routes else 65536
+    if len(path) > shortest:
+        moves = [] # get_viable_moves(path)
+    new_path = None
+    if not moves:
+        if not set(keys.values()) - set(path):
+
+            if shortest >= len(path):
+                viable_routes.append(path)
+    for move in moves:
+        # print(move)
+        new_path = path[:] + [move]
+        viable_routes = dfs(graph, doors, keys, new_path, viable_routes)
+
+    return viable_routes
+
 def find_shortest_path(data):
+    translated, start_coords, doors, keys = translate_input(data)
+    path = [start_coords]
+    viable_paths = dfs(translated, doors, keys, path)
+
+    shortest = min([len(p) for p in viable_paths])
+
+    return shortest - 1
+
+
+def dfs_shortest_path(data):
     translated, start_coords, doors, keys = translate_input(data)
     paths = []
     key_routes = get_viable_routes(translated, start_coords, keys)
@@ -82,14 +146,17 @@ def find_shortest_path(data):
 
 
 
-
-
 if __name__ == '__main__':
     puzzle_input = [line for line in open('day_18.in').read().split('\n')]
 
     for line in puzzle_input:
         print(line)
 
+    sample_0 = [
+        '######',
+        '#bA@a#',
+        '######',
+    ]
     sample_1 = [
         '########################',
         '#f.D.E.e.C.b.A.@.a.B.c.#',
@@ -124,10 +191,10 @@ if __name__ == '__main__':
         '########################',
     ]
     # Part 1
-
+    assert find_shortest_path(sample_0) == 4
     assert find_shortest_path(sample_1) == 86
     assert find_shortest_path(sample_2) == 132
-    assert find_shortest_path(sample_3) == 136
+    #assert find_shortest_path(sample_3) == 136
     assert find_shortest_path(sample_4) == 81
 
-    print(find_shortest_path(puzzle_input))
+    #print(find_shortest_path(puzzle_input))
