@@ -40,3 +40,10 @@ in just a few seconds.
 
 I had forgotten how frustrated I get with these things.  I'm always *right*
 there, but just can't get it right.
+
+Day 14: Reindeer Olympics
+-------------------------
+
+Ok.  This was straightforward and I got Part 1 on the first try.  I almost nailed
+Part 2 on the first try, but my second for loop was indented too far.  Easy fix,
+though, and then I had the right answer.  Feels good, man.
