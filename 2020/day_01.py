@@ -1,21 +1,11 @@
-def part_1(numbers, sum_to_find):
-    for i in range(len(numbers)):
-        num_1 = numbers[i]
-        for j in range(len(numbers)):
-            num_2 = numbers[j]
-            if num_1 + num_2 == sum_to_find:
-                return num_1 * num_2
+from functools import reduce
+from itertools import combinations
 
 
-def part_2(numbers, sum_to_find):
-    for i in range(len(numbers)):
-        num_1 = numbers[i]
-        for j in range(len(numbers)):
-            num_2 = numbers[j]
-            for k in range(len(numbers)):
-                num_3 = numbers[k]
-                if num_1 + num_2 + num_3 == sum_to_find:
-                    return num_1 * num_2 * num_3
+def solver(numbers, sum_to_find, num_addends):
+    for combo in combinations(numbers, num_addends):
+        if sum(combo) == sum_to_find:
+            return reduce((lambda x, y: x * y), combo)
 
 
 if __name__ == '__main__':
@@ -23,9 +13,9 @@ if __name__ == '__main__':
     sample_input = [1721, 979, 366, 299, 675, 1456]
 
     # Part 1
-    assert part_1(sample_input, 2020) == 514579
-    print(part_1(puzzle_input, 2020))
+    assert solver(sample_input, 2020, 2) == 514579
+    print(solver(puzzle_input, 2020, 2))
 
     # Part 2
-    assert part_2(sample_input, 2020) == 241861950
-    print(part_2(puzzle_input, 2020))
+    assert solver(sample_input, 2020, 3) == 241861950
+    print(solver(puzzle_input, 2020, 3))
