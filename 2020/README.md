@@ -41,7 +41,7 @@ hash table with the password as the key and the metadata as the value,
 but of course there were duplicate passwords in the input leading to my
 winding up with 5 fewer entries... so frustrating.  I sometimes wonder
 if the author does that on purpose to trip up someone doing what I did
-and someone screwing up a dead simple problem.  He probably does.  It
+and somehow screwing up a dead simple problem.  He probably does.  It
 just sucks when your solution logic is correct but you failed at parsing
 the input correctly.  Bleh.
 
