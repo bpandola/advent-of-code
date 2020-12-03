@@ -1,32 +1,46 @@
-
-import functools
-
-
-puzzle_input = [line for line in open('day_03.in').read().split('\n')]
-
-dxs = [1,3,5,7,1]
-dys = [1,1,1,1,2]
+from functools import reduce
 
 
-dx = 3
-dy = 1
-trees = 0
-trees_hit = []
-for i in range(len(dxs)):
-    trees = 0
-    dx = dxs[i]
-    dy = dys[i]
-    x, y = 0,0
-    while True:
-        x += dx
-        y += dy
-        if y >= len(puzzle_input):
-            break
-        try:
-            if puzzle_input[y][x%len(puzzle_input[y])] == '#':
-                trees += 1
-        except IndexError:
-            print('wtf')
-    trees_hit.append(trees)
-print(trees_hit[1])
-print(functools.reduce((lambda x, y: x * y), trees_hit))
+def trees_hit(slope, area):
+    dx, dy = slope
+    col, row = 0, 0
+    hits = 0
+    while row < len(area):
+        col += dx
+        row += dy
+        if row < len(area) and area[row][col % len(area[row])] == '#':
+            hits += 1
+    return hits
+
+
+if __name__ == '__main__':
+    puzzle_input = [line for line in open('day_03.in').read().split('\n')]
+
+    sample_input = [
+        '..##.......',
+        '#...#...#..',
+        '.#....#..#.',
+        '..#.#...#.#',
+        '.#...##..#.',
+        '..#.##.....',
+        '.#.#.#....#',
+        '.#........#',
+        '#.##...#...',
+        '#...##....#',
+        '.#..#...#.#',
+    ]
+
+    # Part 1
+    assert trees_hit((3, 1), sample_input) == 7
+    print(trees_hit((3, 1), puzzle_input))
+
+    # Part 2
+    slopes = [
+        (1, 1),
+        (3, 1),
+        (5, 1),
+        (7, 1),
+        (1, 2),
+    ]
+    assert reduce((lambda x, y: x * y), list(map(lambda s: trees_hit(s, sample_input), slopes))) == 336
+    print(reduce((lambda x, y: x * y), list(map(lambda s: trees_hit(s, puzzle_input), slopes))))
