@@ -55,4 +55,13 @@ just solve the problem as they're parsing the input.  They don't even store
 it in an intermediate data structure.  My doing so just added more code in
 which a bug could hide.  Lesson learned.
 
+## Day 3: Toboggan Trajectory
+
+Fun, straightforward little puzzle today involving the usual ascii map
+of `#`s and `.`s to indicate obstacles and open space.  I made a couple
+dumb mistakes, but thankfully they blew up at runtime.  Once my program
+actually worked, I got both solutions correct on the first try.  Just 
+under 10 minutes for Part 1 and exactly 15 minutes total for both parts,
+which left me ranked >2000th place.  Man these coders are fast!
+
 
