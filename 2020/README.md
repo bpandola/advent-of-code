@@ -64,4 +64,11 @@ actually worked, I got both solutions correct on the first try.  Just
 under 10 minutes for Part 1 and exactly 15 minutes total for both parts,
 which left me ranked >2000th place.  Man these coders are fast!
 
+## Day 4: Passport Processing
+
+This was fun, but a little grindy translating all the constraints for the 
+passport data fields into code.  I got a respectable sub-1000 rank for Part 1,
+but a bunch of people caught up to and passed me while I slowly typed out
+Part 2.  I cleaned things up a bit, as there is some speculation on the
+boards that a future problem may call back to this one.
 
