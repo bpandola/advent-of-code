@@ -116,3 +116,16 @@ debugger.
 I gotta bone up on DFS and BFS algorithms!!!
 
 Another great puzzle, though.  I love how creative this guy is.
+
+## Day 8: Handheld Halting
+
+I love these VM type puzzles!  One dumb mistake on Part 1, but
+I made up a *lot* of time on Part 2 and almost cracked the Top
+1000.
+
+I took a lot of time cleaning this one up, as there's the possibility
+this might come back repeatedly (like `intcode`) last year.  If it
+doesn't, this will likely end up as my most over-engineered solution, 
+by far!
+
+Great day!  Enjoyed the puzzle and the refactoring.
