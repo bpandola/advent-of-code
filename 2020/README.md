@@ -89,3 +89,12 @@ but if only I'd continued on that train of thought I might've realized
 that the whole number could simple be parsed as a string of bits!
 
 This was an ingenious puzzle.  Kudos to the AoC creator.
+
+## Day 6: Custom Customs
+
+Of course my fastest, most accurate attempt so far would be on a day
+when I couldn't start at 9pm...  Maybe the lack of pressure is what
+allowed me to not make any dumb mistakes.  Whatever the cause, I was
+able to just get to work, banging out about 15 lines of code in less
+than ten minutes, with both answers correct on the first try.  Feels good, 
+man.
