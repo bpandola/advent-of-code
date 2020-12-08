@@ -86,9 +86,14 @@ on top of each other to parse each sequence of characters when I really
 should have just hardcoded the 7 and 3.  Worse, I missed the critical
 insight.  I thought about using bit shifting to clean up my divide-by-twos,
 but if only I'd continued on that train of thought I might've realized
-that the whole number could simple be parsed as a string of bits!
+that the whole number could simply be parsed as a string of bits!
 
-This was an ingenious puzzle.  Kudos to the AoC creator.
+Remarkable difference between my initial working code and my cleaned
+up version.  It's really cool with a lot of these puzzles to see just
+how little code is required when you fully understand the problem set
+and are able to really boil the solution down to only what is necessary.
+
+This was an ingenious puzzle.  Kudos to the AoC creator on this one.
 
 ## Day 6: Custom Customs
 
