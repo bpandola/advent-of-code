@@ -98,3 +98,21 @@ allowed me to not make any dumb mistakes.  Whatever the cause, I was
 able to just get to work, banging out about 15 lines of code in less
 than ten minutes, with both answers correct on the first try.  Feels good, 
 man.
+
+## Day 7: Handy Haversacks
+
+I was waiting for one of these puzzles... It took me 20 minutes just
+to get the input parsed and another 15 to get an answer for Part 1, 
+but I got it right on the first try without resorting to google or 
+looking at any code from previous AoC puzzles.
+
+Took me another 20 minutes to get the Part 2 sample input to work, 
+but again I had the right answer on the first try.  1 hour total
+for both parts, 3000+ ranking.  Not great, and my code was pret-ty
+ug-ly, but I managed to futz my way through some sort of recursive
+graph traversal using only my limited brain power and the PyCharm
+debugger.
+
+I gotta bone up on DFS and BFS algorithms!!!
+
+Another great puzzle, though.  I love how creative this guy is.
