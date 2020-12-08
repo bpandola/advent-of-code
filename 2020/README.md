@@ -72,3 +72,20 @@ but a bunch of people caught up to and passed me while I slowly typed out
 Part 2.  I cleaned things up a bit, as there is some speculation on the
 boards that a future problem may call back to this one.
 
+## Day 5: Binary Boarding
+
+I knew what I had to do here and got to it, but I had an off-by-one
+error in my logic that tripped me up.  Worse, the PyCharm debugger
+just completely went haywire on me, and I could not figure out why.
+I had to restart the entire application for it to start working again,
+but I'd lost so much time by that point I just kinda threw in the 
+towel and hacked my way through the rest of it.
+
+Premature Generalization is a thing.  I stacked two `while True` loops
+on top of each other to parse each sequence of characters when I really
+should have just hardcoded the 7 and 3.  Worse, I missed the critical
+insight.  I thought about using bit shifting to clean up my divide-by-twos,
+but if only I'd continued on that train of thought I might've realized
+that the whole number could simple be parsed as a string of bits!
+
+This was an ingenious puzzle.  Kudos to the AoC creator.
