@@ -134,3 +134,7 @@ doesn't, this will likely end up as my most over-engineered solution,
 by far!
 
 Great day!  Enjoyed the puzzle and the refactoring.
+
+## Day 9: Encoding Error
+
+Cool puzzle.  Took me ten minutes for each part, which was **way too slow**!
