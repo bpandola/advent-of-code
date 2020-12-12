@@ -138,3 +138,31 @@ Great day!  Enjoyed the puzzle and the refactoring.
 ## Day 9: Encoding Error
 
 Cool puzzle.  Took me ten minutes for each part, which was **way too slow**!
+
+## Day 10: Adapter Array
+
+The degree of difficulty definitely got ratcheted up today.   Part 1 was
+a fantastic example of an overly-complicated problem description masking
+a dead simple solution.  I'm coding up this `while` loop with an embedded 
+`for` loop, and painstakingly testing parts of the input that fall within
+this `0-3` range, all so I could put values into an array I named `order`.
+
+So... yeah... the smart people literally just called `sort` on the input
+for Part 1.  This was by far my most naive brute force attempt for Part
+1, which is saying something!
+
+Part 2 was interesting because it was immediately clear that a brute 
+force attempt would not be workable.  I quickly came up with what I 
+thought was a clever solution (just keeping track of the parts of the
+chain that had multiple possible combinations), but it took me a while
+to implement a (messy) working version of it.  It performed exactly
+as I'd hoped, though, taking just milliseconds to return an answer in
+the 10s of trillions.
+
+Everyone on reddit is saying this is just a DP (Dynamic Programming)
+problem or easily solvable with memoized recursion, but I don't see
+anyone else using my technique.  I don't know if I just totally lucked
+out, or if I came up with something novel.
+
+Regardless, it worked!  And, to quote the great George Costanza: "It didn't 
+really take very long either."
