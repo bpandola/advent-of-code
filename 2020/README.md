@@ -166,3 +166,37 @@ out, or if I came up with something novel.
 
 Regardless, it worked!  And, to quote the great George Costanza: "It didn't 
 really take very long either."
+
+## Day 11: Seating System
+
+Today was a fun cellular automaton puzzle (involving occupied and unoccupied 
+seats in a ferry terminal waiting area because the author does a great job
+of fitting each puzzle into an overarching and coherent narrative, which 
+is pretty creative, I must say).  
+
+Anyway, I tend to work on these 2D puzzles by translating the input into 
+a dictionary that maps coords (x,y) to whatever value is at that location.
+It's not fast, but it does have some nice properties, depending on the 
+problem space, that help speed up the coding time.
+
+I tried to be clever by using a defaultdict and then not bothering to 
+check grid boundaries, but I dropped that in my cleaned up version in 
+favor of just catching KeyError exceptions for boundary testing, which 
+seemed to work a bit better.
+
+I felt like I was fast on Part 1, but it took me almost 30 minutes.
+I got the right answer on the first try, which is always nice.  And I 
+made up some time on Part 2, which is even nicer.
+
+Decent showing tonight, but then of course I go check the subreddit
+for a reality check.  It's really amazing how bright, clever, and
+fast these top guys/gals are.  It also never ceases to amaze me just
+how many ways you can tackle these problems.  Most of the
+pros just treated the grid as an array of strings, which is way faster
+than using dictionaries, of course.  Other people used grid "helper"
+libraries.  That's fine, I guess; but I always try to do the whole
+thing on my own from scratch, only using standard libraries when
+absolutely necessary.  Maybe I should reconsider...
+
+Regardless, I enjoyed this one!  And, as always, I learned a thing or
+two along the way (as well as after the fact).
