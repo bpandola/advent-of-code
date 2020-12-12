@@ -200,3 +200,26 @@ absolutely necessary.  Maybe I should reconsider...
 
 Regardless, I enjoyed this one!  And, as always, I learned a thing or
 two along the way (as well as after the fact).
+
+## Day 12: Rain Risk
+
+I like the puzzles that involve something moving around a 2D grid.  I
+always seemed to do better than usual on them, which I attribute to all the
+game development stuff I did as a kid.  There have been lots of AoC
+puzzles like this, so I grabbed some code from a previous year/day, 
+but in the end it wasn't all that helpful.
+
+I drew a complete blank on how to rotate the direction the ship was
+facing in Part 1, so I ended up just creating these huge look-up tables
+and putting the values in manually.  It worked, but it was pretty sad.
+
+Part 2 was an interesting twist.  Originally, I was doing extra work to
+keep the waypoint relative to the ship (because that's what the problem 
+said to do), but I later realized that it made no difference in the 
+calculations.  I got stumped again on the rotational bit and had to 
+look up the equation, but once I had it plugged in I had the answer.
+
+Checking the sub-reddit was illuminating, as always.  Apparently everyone
+but me knows that using complex numbers simplifies rotational equations.
+It's a neat trick--although I wish I understood a bit better how it actually
+works--and I used it in my cleaned up version.
