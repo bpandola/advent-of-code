@@ -275,3 +275,13 @@ I couldn't figure it out on my own.
 
 (I love the comments on reddit that say things like, "I knew immediately that 
 it was Chinese Remainder Theory" 🙄)
+
+## Day 14: Docking Data
+
+This was a really fun puzzle.  I liked that it involved bitmasking, but in a 
+way that made it impossible (I think) to solve with actual bitmasking.  I was
+able to code up solutions to both parts and run them correctly on the first
+try.  I got stuck on Part 2 trying to get my combinations to work properly 
+and ended up having to resort to using `set()` to remove the duplicates.  I 
+feel like I shouldn't have had to do that, but it did the trick and I got 
+pretty decent rankings (for me) on both parts.
