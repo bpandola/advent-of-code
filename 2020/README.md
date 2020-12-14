@@ -223,3 +223,55 @@ Checking the sub-reddit was illuminating, as always.  Apparently everyone
 but me knows that using complex numbers simplifies rotational equations.
 It's a neat trick--although I wish I understood a bit better how it actually
 works--and I used it in my cleaned up version.
+
+## Day 13: Shuttle Search
+
+Gah... it's so frustrating to know exactly what to do (for Part 1), code it 
+up with no mistakes and submit the answer, only to wind up in 2800th place.
+
+I got the logic right for Part 2, and was able to get the right answer for
+the sample input pretty quickly, but I knew there was no way it was going
+to be able to compute the answer for the real input.  I came up with a
+couple of obvious speed-ups and let it run, but again it was clear that
+it was never gonna get there.
+
+The puzzle text contained the line `surely the actual earliest timestamp will be larger than 100000000000000!`,
+which I took as a generous hint to us simpletons who just try to brute force
+all the answers.  Given that, I set my starting index to that number and let'er 
+run again.  In the meantime, I was opening Chrome tabs on Least Common Multiple 
+and Greatest Common Denominator, etc.  I just knew there had to be some sort of 
+esoteric key to this thing, but it was 1:30 AM and I had to throw in the towel
+and admit defeat for the first time this AoC.  I left my code running overnight
+in the hopes I might wake to an answer.
+
+...
+
+Sixteen hours later and my naive code is still chugging away, my laptop fan
+is at max rpm, and I don't think I'm anywhere near a solution.
+
+I checked the subreddit for a hint and everyone is mentioning the 
+[Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem).
+I'm not great at reading math notation, but I sort of got the gist of it and
+saw how it would be applicable to our problem.  I found a Chinese Remainder
+Theorem calculator on the internet, but it wasn't working with my puzzle
+input.  After going over the wikipedia page several more times, interspersed
+with staring out the window at the falling snow for long periods of time, I 
+finally managed to figure out a way to translate my puzzle input into the 
+inputs needed for the calculator and--voila!--I had an answer!  And it was 
+correct!
+
+Interestingly, my naive approach was not even halfway to the answer after
+almost 20 hours.  I set about trying to come up with some code based on 
+the math notation on the wikipedia page, but... I gave up.  A simple
+google search pointed straight at a remarkably simple 
+[Python implementation](https://rosettacode.org/wiki/Chinese_remainder_theorem#Python) 
+that I was able to just drop right into my code.  
+
+I had been going down the LCM/GCD/Multiplicative Inverse path, but there was 
+no chance I was going to independently derive the Chinese Remainder Theorem.
+There were a few people on reddit that seemed to have solved it without
+using the Chinese Remainder Theorem, so I guess I'm still a bit annoyed that
+I couldn't figure it out on my own.
+
+(I love the comments on reddit that say things like, "I knew immediately that 
+it was Chinese Remainder Theory" 🙄)
