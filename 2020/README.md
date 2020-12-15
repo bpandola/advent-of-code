@@ -285,3 +285,32 @@ try.  I got stuck on Part 2 trying to get my combinations to work properly
 and ended up having to resort to using `set()` to remove the duplicates.  I 
 feel like I shouldn't have had to do that, but it did the trick and I got 
 pretty decent rankings (for me) on both parts.
+
+## Day 15: Rambunctious Recitation
+
+This was an interesting puzzle.  I felt like there was a bit of a chicken/egg
+problem as I was trying to code it, but I persevered.  For Part 1, I just
+kept an array of all the numbers and used it to find the index of previous
+numbers, which worked fine.  I had a tiny bit of trouble with figuring out
+exactly what constituted the last number--should I consider the starting 
+numbers as part of the list?  (Answer: Yes.)  I felt *really* slow on this
+one.  It took me a bit to understand the problem, and I had a few hiccups
+during the implementation, but ultimately I wound up with a decent rank.
+
+For Part 2, I immediately saw that number `30,000,000` and figured this
+would be yet another day when I had to completely re-think my Part 1
+strategy, but... it wasn't.  There didn't appear to be any magic
+algorithm.  I kicked off Part 2 using my initial code and while it 
+ran I started re-implementing things with a dictionary instead of an
+array, but in the end it wasn't even necessary.  It took a while to 
+run, but just several seconds--not minutes, or hours, or days.  Unfortunately,
+I lost a bit of time on Part 2.  I would have been better off just
+waiting for my initial code to finish running.
+
+A quick look at the subreddit showed there were quite a few people just
+like me, wondering what the catch was on Part 2.  Someone mentioned that
+this was a `Van Eck` sequence, but looking that up revealed code very 
+similar to what I had already written.  I briefly entertained the idea
+of trying to find the key to the pattern, but thankfully gave that up 
+as a fool's errand after only a couple of minutes of pondering, and simply
+thanked the puzzle gods for a simple puzzle and a decent showing for Day 15.
