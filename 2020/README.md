@@ -314,3 +314,28 @@ similar to what I had already written.  I briefly entertained the idea
 of trying to find the key to the pattern, but thankfully gave that up 
 as a fool's errand after only a couple of minutes of pondering, and simply
 thanked the puzzle gods for a simple puzzle and a decent showing for Day 15.
+
+## Day 16: Ticket Translation
+
+This might be my favorite puzzle so far this year.  There was a lot of input
+parsing required, so I got right to that.  I decided to make my life easier 
+by creating a couple of very basic (data bag) classes.  Once I had things 
+parsed out into my classes, I was able to pretty quickly write the simple
+algorithm needed to determine the valid tickets.  I was pretty much able 
+to just write once, run once, and come up with the correct solution--which
+was good enough for a <1500 rank.
+
+Part 2 was trickier, of course, but it was a really interesting problem and
+I enjoyed reasoning about how to solve it.  I got tripped up by (foolishly)
+not considering that there might be multiple valid positions for a particular
+field name.  It took me quite a bit of debugging time to finally resolve
+those cases, which cost me quite a bit of spots in the rankings, but it was 
+*extremely* satisfying to complete this one.
+
+Some people were complaining on the sub-reddit that things just haven't been 
+as difficult this year, but I actually think this puzzle had just the right
+amount of complexity.  You had to really think about the input and how to
+tackle solving it, but it didn't require any esoteric math theory or computer
+science knowledge.
+
+Bravo, AoC Creator!  This was a good day!
