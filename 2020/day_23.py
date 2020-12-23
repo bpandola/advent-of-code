@@ -1,5 +1,5 @@
-
 class Node:
+
     def __init__(self, value):
         self.prev = None
         self.next = None
@@ -7,84 +7,70 @@ class Node:
 
 
 class CircularLinkedList:
+
     def __init__(self, nodes):
+        for i in range(len(nodes)):
+            nodes[i].prev = nodes[i - 1 if i - 1 >= 0 else len(nodes) - 1]
+            nodes[i].next = nodes[i + 1 if i + 1 < len(nodes) else 0]
         self.head = nodes[0]
-        self.min = min(n.value for n in nodes)
-        self.max = max(n.value for n in nodes)
-        num_to_node_map = {}
-        for node in nodes:
-            num_to_node_map[node.value] = node
-        self.num_to_node = num_to_node_map
 
-    def add(self, after, node):
-        node.prev = after
-        node.next = after.next
-        after.next.prev = node
-        after.next = node
-        self.num_to_node[node.value] = node
+    def insert_nodes(self, nodes, after=None):
+        after = after or self.head
+        before = after.next
 
-    def remove(self, node):
-        if self.head == node:
-            self.head = node.next
-        node.prev.next = node.next
-        node.next.prev = node.prev
-        return node
+        nodes[0].prev = after
+        nodes[-1].next = before
 
-    def pick(self, num_to_pick):
-        picks = []
-        for i in range(num_to_pick):
-            picks.append(self.remove(self.head.next))
-        return picks
+        before.prev = nodes[-1]
+        after.next = nodes[0]
 
     def traverse(self, starting_point=None):
-        if starting_point is None:
-            starting_point = self.head
+        starting_point = starting_point or self.head
         node = starting_point
         while node is not None and (node.next != starting_point):
             yield node
             node = node.next
         yield node
 
-    def print_list(self, starting_point=None):
-        nodes = []
-        for node in self.traverse(starting_point):
-            nodes.append(node.value)
-        return nodes
-
-    def __repr__(self):
-        return str(self.print_list())
-
 
 class CrabCups:
 
     def __init__(self, starting_cups, total_cups=None):
         total_cups = total_cups or len(starting_cups)
-        cups = starting_cups[:]
+        all_cups = starting_cups[:]
         for n in range(len(starting_cups), total_cups):
-            cups.append(n+1)
-        nodes = [Node(n) for n in use_inp]
-        for i in range(len(nodes)):
-            prev = i - 1
-            if prev < 0:
-                prev = len(nodes) - 1
-            nodes[i].prev = nodes[prev]
-
-            nxt = i + 1
-            if nxt >= len(nodes):
-                nxt = 0
-            nodes[i].next = nodes[nxt]
+            all_cups.append(n + 1)
+        nodes = [Node(n) for n in all_cups]
         self.llist = CircularLinkedList(nodes)
+        self.cup_min = min(n.value for n in self.llist.traverse())
+        self.cup_max = max(n.value for n in self.llist.traverse())
+        self.value_to_node = {}
+        for node in nodes:
+            self.value_to_node[node.value] = node
+
+    def pick(self, how_many_to_pick):
+        picks = []
+        ptr = self.current_cup
+        for i in range(how_many_to_pick):
+            ptr = ptr.next
+            picks.append(ptr)
+        self.current_cup.next = ptr.next
+        ptr.next.prev = self.current_cup
+        return picks
 
     def select_destination_cup(self, cups_picked):
-        destination = self.current_cup.value - 1
+        dest_cup_value = self.current_cup.value - 1
         while True:
-            if destination < self.llist.min:
-                destination = self.llist.max
-            if destination not in [n.value for n in cups_picked]:
+            if dest_cup_value < self.cup_min:
+                dest_cup_value = self.cup_max
+            if dest_cup_value not in [n.value for n in cups_picked]:
                 break
-            destination -= 1
-        dest = self.llist.num_to_node[destination]
-        return dest
+            dest_cup_value -= 1
+        destination = self.value_to_node[dest_cup_value]
+        return destination
+
+    def insert_cups(self, cups_to_insert, after):
+        self.llist.insert_nodes(cups_to_insert, after)
 
     @property
     def current_cup(self):
@@ -95,80 +81,40 @@ class CrabCups:
         self.llist.head = value
 
     def do_move(self):
-        three_cups = self.llist.pick(3)
-        dest = self.select_destination_cup(three_cups)
-        for cup in three_cups:
-            self.llist.add(dest, cup)
-            dest = cup
-        # advance current cup
+        cups_picked = self.pick(3)
+        destination = self.select_destination_cup(cups_picked)
+        self.insert_cups(cups_picked, destination)
         self.current_cup = self.current_cup.next
 
     def play(self, num_moves):
         for _ in range(num_moves):
             self.do_move()
+        return self
 
+    def get_cups(self, starting_cup=None, starting_with_cup_value=None):
+        starting_cup = starting_cup or self.current_cup
+        if starting_with_cup_value:
+            starting_cup = self.value_to_node[starting_with_cup_value]
+        return list(self.llist.traverse(starting_cup))
 
+    def get_cup_by_value(self, value):
+        return self.value_to_node[value]
 
 
 if __name__ == '__main__':
-    # puzzle_input = parse_input('day_23.in')
-    # sample_input = parse_input('day_23.in.sample_01')
-    # sample_input2 = parse_input('day_23.in.sample_02')
+    puzzle_input = [int(c) for c in '135468729']
+    sample_input = [int(c) for c in '389125467']
 
-    puzzle_input = [int(c) for c in "135468729"]
-    sample_input = [int(c) for c in "389125467"]
-    use_inp = sample_input
-    # PART2
-    # for n in range(len(use_inp)+1, 1000001):
-    #     use_inp.append(n)
-    # nodes = [Node(n) for n in use_inp]
-    # for i in range(len(nodes)):
-    #     prev = i -1
-    #     if prev < 0:
-    #         prev = len(nodes)-1
-    #     nodes[i].prev = nodes[prev]
-    #
-    #     nxt = i + 1
-    #     if nxt >= len(nodes):
-    #         nxt = 0
-    #     nodes[i].next = nodes[nxt]
-    #
-    # llist = CircularLinkedList(nodes)
-    # print(puzzle_input)
+    # Part 1
+    cups = CrabCups(sample_input).play(100).get_cups(starting_with_cup_value=1)
+    assert ''.join([str(cup.value) for cup in cups[1:]]) == '67384529'
 
+    cups = CrabCups(puzzle_input).play(100).get_cups(starting_with_cup_value=1)
+    print(''.join([str(cup.value) for cup in cups[1:]]))
 
-    #cups = puzzle_input[:]
-    # PART2
-    # for n in range(len(cups)+1, 1000001):
-    #     cups.append(n)
-    game = CrabCups(use_inp)
-    #for i in range(100):
-        #print(i)
-        # three_cups = llist.pick(3)
-        # destination = llist.head.data - 1
-        # while True:
-        #     if destination < llist.min:
-        #         destination = llist.max
-        #     if destination not in [n.data for n in three_cups]:
-        #         break
-        #     destination -= 1
-        # dest = llist.num_to_node[destination]
-        # for cup in three_cups:
-        #     llist.add(dest, cup)
-        #     dest = cup
-        # # advance current cup
-        # llist.head = llist.head.next
-    game.play(100)
+    # Part 2
+    cup = CrabCups(sample_input, total_cups=1000000).play(10000000).get_cup_by_value(1)
+    assert cup.next.value * cup.next.next.value == 149245887792
 
-    print(game.llist.print_list())
-    # one_index = llist.num_to_node[1]
-    # op1 = one_index.next
-    # op2 = op1.next
-    # print(op1.data * op2.data)
-
-
-
-
-
-
-
+    cup = CrabCups(puzzle_input, total_cups=1000000).play(10000000).get_cup_by_value(1)
+    print(cup.next.value * cup.next.next.value)
