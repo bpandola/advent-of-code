@@ -3,24 +3,34 @@
 # 0,0 0,1 1,0 1,1
 from functools import reduce
 import math
+
+
 class Tile:
 
     def __init__(self, id_, grid):
         self.id = id_
-        self.grid = grid
         self.size = len(grid)
-        self.flipped_horizontal = False
-        self.flipped_vertical = False
         self.shrink_factor = 0
-        # top = ''.join(grid[0+self.shrink_factor])
-        # bottom = ''.join(grid[self.size-1-self.shrink_factor])
-        # left = ''.join([grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
-        # right = ''.join([grid[y][self.size-1-self.shrink_factor] for y in range(0+self.shrink_factor, self.size-self.shrink_factor)])
-        # top_reversed = ''.join(reversed(top))
-        # bottom_reversed = ''.join(reversed(bottom))
-        # left_reversed = ''.join(reversed(left))
-        # right_reversed = ''.join(reversed(right))
-        # self.sides = [left, right, top, bottom, top_reversed, bottom_reversed, left_reversed, right_reversed]
+        self.flipped_vertical = False
+        self.flipped_horizontal = False
+        self.flipped_axis = False
+        self._orientations = {}
+        for flip_horiz in [False, True]:
+            for flip_vert in [False, True]:
+                for flip_axis in [False, True]:
+                    oriented = grid[:]
+                    if flip_horiz:
+                        oriented = self.flip_horizontal(oriented)
+                    if flip_vert:
+                        oriented = self.flip_vertical(oriented)
+                    if flip_axis:
+                        oriented = self.flip_axis(oriented)
+                    self._orientations[(flip_horiz, flip_vert, flip_axis)] = oriented
+
+
+    @property
+    def grid(self):
+        return self._orientations[(self.flipped_horizontal, self.flipped_vertical, self.flipped_axis)]
 
     @property
     def sides(self):
@@ -28,64 +38,154 @@ class Tile:
 
     @property
     def top(self):
-        if self.flipped_vertical:
-            top = ''.join(self.grid[self.size - 1 - self.shrink_factor])
-        else:
-            top = ''.join(self.grid[0+self.shrink_factor])
-        if self.flipped_horizontal:
-            return ''.join(reversed(top))
-        return top
+        return ''.join(self.grid[0+self.shrink_factor])
 
     @property
     def bottom(self):
-        if self.flipped_vertical:
-            bottom = ''.join(self.grid[0+self.shrink_factor])
-        else:
-            bottom = ''.join(self.grid[self.size - 1 - self.shrink_factor])
-        if self.flipped_horizontal:
-            return ''.join(reversed(bottom))
-        return bottom
+        return ''.join(self.grid[self.size - 1 - self.shrink_factor])
 
     @property
     def left(self):
-        if self.flipped_horizontal:
-            left = ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
-        else:
-            left = ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
-        if self.flipped_vertical:
-            return ''.join(reversed(left))
-        return left
+        return ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
 
     @property
     def right(self):
-        if self.flipped_horizontal:
-            right = ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
-        else:
-            right = ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
-        if self.flipped_vertical:
-            return ''.join(reversed(right))
-        return right
+        return ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
 
     @property
     def orientations(self):
         for flip_horiz in [False, True]:
             for flip_vert in [False, True]:
-                self.flipped_horizontal = flip_horiz
-                self.flipped_vertical = flip_vert
-                yield self
+                for flip_axis in [False, True]:
+                    self.flipped_horizontal = flip_horiz
+                    self.flipped_vertical = flip_vert
+                    self.flipped_axis = flip_axis
+                    yield self
+
+    @staticmethod
+    def flip_horizontal(grid):
+        return [list(reversed(line)) for line in grid]
+
+    @staticmethod
+    def flip_vertical(grid):
+        return [grid[i] for i in range(len(grid)-1, -1, -1)]
+
+    @staticmethod
+    def flip_axis(grid):
+        grid_flipped = []
+        for x in range(len(grid)-1,-1,-1):
+            line = [grid[y][x] for y in range(len(grid))]
+            grid_flipped.append(line)
+        return grid_flipped
+
+    @staticmethod
+    def shrink(grid, shrink):
+        grid_shrunk = []
+        for y in range(shrink,  len(grid) - shrink):
+            line = [grid[y][x] for x in range(shrink, len(grid)-shrink)]
+            grid_shrunk.append(line)
+        return grid_shrunk
 
     @classmethod
     def from_raw_data(cls, data):
         lines = data.split('\n')
         id_ = int(lines[0].split(' ')[1][:-1])
         grid = []
-        for i in range(1, 11):
+        for i in range(1,len(lines)):
             grid.append([c for c in lines[i]])
         return Tile(id_, grid)
 
     def __str__(self):
         return f'{self.id}'
 
+    def print(self):
+        for j in range(self.size):
+            print(''.join(self.grid[j]))
+
+
+#
+# class Tile2:
+#
+#     def __init__(self, id_, grid):
+#         self.id = id_
+#         self.grid = grid
+#         self.size = len(grid)
+#         self.flipped_horizontal = False
+#         self.flipped_vertical = False
+#         self.shrink_factor = 0
+#         # top = ''.join(grid[0+self.shrink_factor])
+#         # bottom = ''.join(grid[self.size-1-self.shrink_factor])
+#         # left = ''.join([grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
+#         # right = ''.join([grid[y][self.size-1-self.shrink_factor] for y in range(0+self.shrink_factor, self.size-self.shrink_factor)])
+#         # top_reversed = ''.join(reversed(top))
+#         # bottom_reversed = ''.join(reversed(bottom))
+#         # left_reversed = ''.join(reversed(left))
+#         # right_reversed = ''.join(reversed(right))
+#         # self.sides = [left, right, top, bottom, top_reversed, bottom_reversed, left_reversed, right_reversed]
+#
+#     @property
+#     def sides(self):
+#         return [self.top, self.bottom, self.left, self.right]
+#
+#     @property
+#     def top(self):
+#         if self.flipped_vertical:
+#             top = ''.join(self.grid[self.size - 1 - self.shrink_factor])
+#         else:
+#             top = ''.join(self.grid[0+self.shrink_factor])
+#         if self.flipped_horizontal:
+#             return ''.join(reversed(top))
+#         return top
+#
+#     @property
+#     def bottom(self):
+#         if self.flipped_vertical:
+#             bottom = ''.join(self.grid[0+self.shrink_factor])
+#         else:
+#             bottom = ''.join(self.grid[self.size - 1 - self.shrink_factor])
+#         if self.flipped_horizontal:
+#             return ''.join(reversed(bottom))
+#         return bottom
+#
+#     @property
+#     def left(self):
+#         if self.flipped_horizontal:
+#             left = ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
+#         else:
+#             left = ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
+#         if self.flipped_vertical:
+#             return ''.join(reversed(left))
+#         return left
+#
+#     @property
+#     def right(self):
+#         if self.flipped_horizontal:
+#             right = ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
+#         else:
+#             right = ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
+#         if self.flipped_vertical:
+#             return ''.join(reversed(right))
+#         return right
+#
+#     @property
+#     def orientations(self):
+#         for flip_horiz in [False, True]:
+#             for flip_vert in [False, True]:
+#                 self.flipped_horizontal = flip_horiz
+#                 self.flipped_vertical = flip_vert
+#                 yield self
+#
+#     @classmethod
+#     def from_raw_data(cls, data):
+#         lines = data.split('\n')
+#         id_ = int(lines[0].split(' ')[1][:-1])
+#         grid = []
+#         for i in range(1, 11):
+#             grid.append([c for c in lines[i]])
+#         return Tile(id_, grid)
+#
+#     def __str__(self):
+#         return f'{self.id}'
 
 def parse_input(filename):
     blobs = open(filename).read().split('\n\n')
@@ -100,6 +200,7 @@ class ImageAssembler:
         self.size = int(math.sqrt(len(tiles)))
         self.image = [[None for _ in range(self.size)] for _ in range(self.size)]
         self.tile_map = self._preprocess_tiles(tiles)
+        self.assembled = None
 
     @property
     def corners(self):
@@ -219,8 +320,68 @@ class ImageAssembler:
                         break
                 if restart:
                     break
-        return image
+        # Now we have our image with each tile shrunk by one
+        # Now we stitch into one big tile
+        for key, value in image.items():
+            image[key] = Tile(value.id, value.shrink(value.grid, 1))
+        full_grid = []
+        tile_size = image[(0,0)].size
+        for y in range(self.size):
+            full_grid += [[] for _ in range(tile_size)]
+            for x in range(self.size):
+                tile = image[(x,y)]
+                for j in range(tile_size):
+                    full_grid[y*tile_size+j] += tile.grid[j]
+
+
+
+
+
+        ret = Tile(-1, full_grid)
+        return ret
                         
+
+
+def find_sea_monsters(image):
+    deltas = [
+        (0,0),
+        (18,-1),
+        (5, 0),
+        (6, 0),
+        (11, 0),
+        (12, 0),
+        (17, 0),
+        (18, 0),
+        (19, 0),
+        (1, 1),
+        (4, 1),
+        (7, 1),
+        (10, 1),
+        (13, 1),
+        (16, 1),
+    ]
+    for orientation in image.orientations:
+        grid = orientation.grid
+        sea_monsters = 0
+        for j in range(image.size):
+            for i in range(image.size):
+                if grid[j][i] != '#':
+                    continue
+                for m, n in deltas:
+                    x = i + m
+                    y = j + n
+                    if x<0 or y <0 or x>=orientation.size or y>= orientation.size:
+                        break
+                    ch = grid[y][x]
+                    if ch != '#':
+                        break
+                else:
+                    sea_monsters += 1
+        if sea_monsters > 0:
+            num_hashes = sum([line.count('#') for line in grid])
+            num_hashes -= sea_monsters*15
+            print(f'Num Hashes: {num_hashes}')
+
 
 
 
@@ -242,4 +403,10 @@ if __name__ == '__main__':
 
     # Part 2
     image = sample_ia.assemble()
-    print(image)
+    # for orientation in image.orientations:
+    #     orientation.print()
+    #     print('\n\n')
+    find_sea_monsters(image)
+
+    image = puzzle_ia.assemble()
+    find_sea_monsters(image)
