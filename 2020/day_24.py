@@ -1,12 +1,12 @@
-import sys
+
 dirs = ['e', 'w', 'se', 'sw', 'nw', 'ne']
 deltas = {
-        'e': (2, 0),
-        'w': (-2, 0),
-        'se': (1, 2),
-        'sw': (-1, 2),
-        'ne': (1, -2),
-        'nw': (-1, -2)
+        'e': (1, -1, 0),
+        'w': (-1,  1, 0),
+        'se': (0, -1, 1),
+        'sw': (-1, 0, 1),
+        'ne': (1, 0, -1),
+        'nw': (0, 1, -1)
     }
 def lay_floor(instructions):
 
@@ -20,66 +20,77 @@ def lay_floor(instructions):
                 if cmd[acc:].startswith(d):
                     parsed_cmd.append(d)
                     acc += len(d)
-        x, y = 0, 0
+        x, y,  z = 0, 0, 0
         for move in parsed_cmd:
-            dx, dy = deltas[move]
+            dx, dy, dz = deltas[move]
             x += dx
             y += dy
-        if (x, y) in tiles:
-            tiles[(x, y)] = 'black' if tiles[(x, y)] == 'white' else 'white'
+            z += dz
+        coords = (x, y, z)
+        if coords in tiles:
+            tiles[coords] = 'black' if tiles[coords] == 'white' else 'white'
         else:
-            tiles[(x, y)] = 'black'
+            tiles[coords] = 'black'
 
     return tiles
 
-def get_min_max(d):
-    min_x, max_x = sys.maxsize, -sys.maxsize
-    min_y, max_y = sys.maxsize, -sys.maxsize
+def get_coords_to_check(d):
+    to_check = set()
     for coords, color in d.items():
         if color != 'black':
             continue
-        x, y = coords
-        min_x = min(x, min_x)
-        max_x = max(x, max_x)
-        min_y = min(x, min_y)
-        max_y = max(x, max_y)
-    return min_x -2, min_y -1, max_x + 2, max_y+2
+        to_check.add(coords)
+        for adj_coords in get_adjacent_coords(coords):
+            to_check.add(adj_coords)
+    return to_check
 
+def get_adjacent_coords(coords):
+    adj = set()
+    for d in dirs:
+        x, y, z = coords
+        dx, dy, dz = deltas[d]
+        x += dx
+        y+=dy
+        z+=dz
+        adj.add((x,y,z))
+    return adj
+
+
+def adjacent_counts(pos, floor):
+    count_white = 0
+    for d in dirs:
+        x, y, z = pos
+        dx, dy, dz = deltas[d]
+        x += dx
+        y+=dy
+        z+=dz
+        try:
+            c = floor[(x,y, z)]
+        except KeyError:
+            c = 'white'
+        count_white += 1 if c == 'white' else 0
+    return count_white, 6 - count_white
 
 def run_simulation(tiles, num_days):
     floor = tiles.copy()
 
-    def adjacent_counts(coords):
-        count_white = 0
-        for d in dirs:
-            x, y = coords
-            dx, dy = deltas[d]
-            x += dx
-            y+=dy
-            try:
-                color = floor[(x,y)]
-            except KeyError:
-                color = 'white'
-            count_white += 1 if color == 'white' else 0
-        return count_white, 6 - count_white
+
 
 
     for i in range(num_days):
         floor_new = floor.copy()
-        min_x, min_y, max_x, max_y = get_min_max(floor)
-        for x in range(min_x, max_x+1):
-            for y in range(min_y, max_y+1):
-                coords = (x,y)
-                white,black =adjacent_counts(coords)
-                try:
-                    color = floor[(x,y)]
-                except  KeyError:
-                    color ='white'
-                if color == 'white' and black == 2:
-                    floor_new[coords] = 'black'
-                else:
-                    if black == 0 or black > 2:
-                        floor_new[coords] = 'white'
+
+        for coords in get_coords_to_check(floor):
+            white,black =adjacent_counts(coords, floor)
+            try:
+                color = floor[coords]
+            except  KeyError:
+                color ='white'
+            if color == 'white' and black == 2:
+                floor_new[coords] = 'black'
+            else:
+                if black == 0 or black > 2:
+                    floor_new[coords] = 'white'
         floor = floor_new.copy()
         print(len([color for color in floor.values() if color == 'black']))
     return floor
@@ -107,33 +118,5 @@ if __name__ == '__main__':
     sample_floor = run_simulation(sample_floor, 100)
     assert len([color for color in sample_floor.values() if color == 'black']) == 2208
 
-    # dirs = ['e', 'w', 'se', 'sw',  'nw', 'ne']
-    # deltas = {
-    #     'e': (2,0),
-    #     'w': (-2,0),
-    #     'se': (1,2),
-    #     'sw': (-1,2),
-    #     'ne': (1, -2),
-    #     'nw': (-1, -2)
-    # }
-    # tiles = {}
-    #
-    # for cmd in puzzle_input:
-    #     parsed_cmd = []
-    #     acc = 0
-    #     while acc < len(cmd):
-    #         for d in dirs:
-    #             if cmd[acc:].startswith(d):
-    #                 parsed_cmd.append(d)
-    #                 acc += len(d)
-    #     x, y = 0, 0
-    #     for move in parsed_cmd:
-    #         dx, dy = deltas[move]
-    #         x+=dx
-    #         y+=dy
-    #     if (x,y) in tiles:
-    #         tiles[(x,y)] = 'black' if tiles[(x,y)] == 'white' else 'white'
-    #     else:
-    #         tiles[(x,y)] = 'black'
-    #
-    # print(len([v for v in tiles.values() if v == 'black']))
+    puzzle_floor = run_simulation(puzzle_floor, 100)
+    print(len([color for color in puzzle_floor.values() if color == 'black']))
