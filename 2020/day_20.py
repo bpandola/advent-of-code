@@ -1,6 +1,4 @@
-# Orientations
-# 0 is normal 1 is flipped (horiz/vert)
-# 0,0 0,1 1,0 1,1
+
 from functools import reduce
 import math
 
@@ -101,91 +99,6 @@ class Tile:
     def print(self):
         for j in range(self.size):
             print(''.join(self.grid[j]))
-
-
-#
-# class Tile2:
-#
-#     def __init__(self, id_, grid):
-#         self.id = id_
-#         self.grid = grid
-#         self.size = len(grid)
-#         self.flipped_horizontal = False
-#         self.flipped_vertical = False
-#         self.shrink_factor = 0
-#         # top = ''.join(grid[0+self.shrink_factor])
-#         # bottom = ''.join(grid[self.size-1-self.shrink_factor])
-#         # left = ''.join([grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
-#         # right = ''.join([grid[y][self.size-1-self.shrink_factor] for y in range(0+self.shrink_factor, self.size-self.shrink_factor)])
-#         # top_reversed = ''.join(reversed(top))
-#         # bottom_reversed = ''.join(reversed(bottom))
-#         # left_reversed = ''.join(reversed(left))
-#         # right_reversed = ''.join(reversed(right))
-#         # self.sides = [left, right, top, bottom, top_reversed, bottom_reversed, left_reversed, right_reversed]
-#
-#     @property
-#     def sides(self):
-#         return [self.top, self.bottom, self.left, self.right]
-#
-#     @property
-#     def top(self):
-#         if self.flipped_vertical:
-#             top = ''.join(self.grid[self.size - 1 - self.shrink_factor])
-#         else:
-#             top = ''.join(self.grid[0+self.shrink_factor])
-#         if self.flipped_horizontal:
-#             return ''.join(reversed(top))
-#         return top
-#
-#     @property
-#     def bottom(self):
-#         if self.flipped_vertical:
-#             bottom = ''.join(self.grid[0+self.shrink_factor])
-#         else:
-#             bottom = ''.join(self.grid[self.size - 1 - self.shrink_factor])
-#         if self.flipped_horizontal:
-#             return ''.join(reversed(bottom))
-#         return bottom
-#
-#     @property
-#     def left(self):
-#         if self.flipped_horizontal:
-#             left = ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
-#         else:
-#             left = ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
-#         if self.flipped_vertical:
-#             return ''.join(reversed(left))
-#         return left
-#
-#     @property
-#     def right(self):
-#         if self.flipped_horizontal:
-#             right = ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
-#         else:
-#             right = ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
-#         if self.flipped_vertical:
-#             return ''.join(reversed(right))
-#         return right
-#
-#     @property
-#     def orientations(self):
-#         for flip_horiz in [False, True]:
-#             for flip_vert in [False, True]:
-#                 self.flipped_horizontal = flip_horiz
-#                 self.flipped_vertical = flip_vert
-#                 yield self
-#
-#     @classmethod
-#     def from_raw_data(cls, data):
-#         lines = data.split('\n')
-#         id_ = int(lines[0].split(' ')[1][:-1])
-#         grid = []
-#         for i in range(1, 11):
-#             grid.append([c for c in lines[i]])
-#         return Tile(id_, grid)
-#
-#     def __str__(self):
-#         return f'{self.id}'
 
 def parse_input(filename):
     blobs = open(filename).read().split('\n\n')
@@ -342,24 +255,36 @@ class ImageAssembler:
                         
 
 
-def find_sea_monsters(image):
-    deltas = [
-        (0,0),
-        (18,-1),
-        (5, 0),
-        (6, 0),
-        (11, 0),
-        (12, 0),
-        (17, 0),
-        (18, 0),
-        (19, 0),
-        (1, 1),
-        (4, 1),
-        (7, 1),
-        (10, 1),
-        (13, 1),
-        (16, 1),
-    ]
+def calc_water_roughness(image):
+    sea_monster = [
+    [c for c in '.#.#...#.###...#.##.O#..'],
+    [c for c in '#.O.##.OO#.#.OO.##.OOO##'],
+    [c for c in '..#O.#O#.O##O..O.#O##.##'],
+        ]
+    start_x, start_y = 2, 1
+
+    deltas = []
+    for j in range(len(sea_monster)):
+        for i in range(len(sea_monster[j])):
+            if sea_monster[j][i] == 'O':
+                deltas.append((i-start_x, j-start_y))
+    # deltas = [
+    #     (0,0),
+    #     (18,-1),
+    #     (5, 0),
+    #     (6, 0),
+    #     (11, 0),
+    #     (12, 0),
+    #     (17, 0),
+    #     (18, 0),
+    #     (19, 0),
+    #     (1, 1),
+    #     (4, 1),
+    #     (7, 1),
+    #     (10, 1),
+    #     (13, 1),
+    #     (16, 1),
+    # ]
     for orientation in image.orientations:
         grid = orientation.grid
         sea_monsters = 0
@@ -380,13 +305,7 @@ def find_sea_monsters(image):
         if sea_monsters > 0:
             num_hashes = sum([line.count('#') for line in grid])
             num_hashes -= sea_monsters*15
-            print(f'Num Hashes: {num_hashes}')
-
-
-
-
-
-
+            return num_hashes
 
 
 if __name__ == '__main__':
@@ -403,10 +322,7 @@ if __name__ == '__main__':
 
     # Part 2
     image = sample_ia.assemble()
-    # for orientation in image.orientations:
-    #     orientation.print()
-    #     print('\n\n')
-    find_sea_monsters(image)
+    assert calc_water_roughness(image) == 273
 
     image = puzzle_ia.assemble()
-    find_sea_monsters(image)
+    print(calc_water_roughness(image))
