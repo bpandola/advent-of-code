@@ -1,6 +1,13 @@
-
-from functools import reduce
 import math
+from functools import reduce
+
+
+def parse_input(filename):
+    blobs = open(filename).read().split('\n\n')
+    tiles = []
+    for data in blobs:
+        tiles.append(Tile.from_raw_data(data))
+    return tiles
 
 
 class Tile:
@@ -25,7 +32,6 @@ class Tile:
                         oriented = self.flip_axis(oriented)
                     self._orientations[(flip_horiz, flip_vert, flip_axis)] = oriented
 
-
     @property
     def grid(self):
         return self._orientations[(self.flipped_horizontal, self.flipped_vertical, self.flipped_axis)]
@@ -36,7 +42,7 @@ class Tile:
 
     @property
     def top(self):
-        return ''.join(self.grid[0+self.shrink_factor])
+        return ''.join(self.grid[0 + self.shrink_factor])
 
     @property
     def bottom(self):
@@ -44,11 +50,13 @@ class Tile:
 
     @property
     def left(self):
-        return ''.join([self.grid[y][0+self.shrink_factor] for y in range(0+self.shrink_factor,self.size-self.shrink_factor)])
+        return ''.join([self.grid[y][0 + self.shrink_factor] for y in
+                        range(0 + self.shrink_factor, self.size - self.shrink_factor)])
 
     @property
     def right(self):
-        return ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in range(0 + self.shrink_factor, self.size - self.shrink_factor)])
+        return ''.join([self.grid[y][self.size - 1 - self.shrink_factor] for y in
+                        range(0 + self.shrink_factor, self.size - self.shrink_factor)])
 
     @property
     def orientations(self):
@@ -66,12 +74,12 @@ class Tile:
 
     @staticmethod
     def flip_vertical(grid):
-        return [grid[i] for i in range(len(grid)-1, -1, -1)]
+        return [grid[i] for i in range(len(grid) - 1, -1, -1)]
 
     @staticmethod
     def flip_axis(grid):
         grid_flipped = []
-        for x in range(len(grid)-1,-1,-1):
+        for x in range(len(grid) - 1, -1, -1):
             line = [grid[y][x] for y in range(len(grid))]
             grid_flipped.append(line)
         return grid_flipped
@@ -79,8 +87,8 @@ class Tile:
     @staticmethod
     def shrink(grid, shrink):
         grid_shrunk = []
-        for y in range(shrink,  len(grid) - shrink):
-            line = [grid[y][x] for x in range(shrink, len(grid)-shrink)]
+        for y in range(shrink, len(grid) - shrink):
+            line = [grid[y][x] for x in range(shrink, len(grid) - shrink)]
             grid_shrunk.append(line)
         return grid_shrunk
 
@@ -89,23 +97,27 @@ class Tile:
         lines = data.split('\n')
         id_ = int(lines[0].split(' ')[1][:-1])
         grid = []
-        for i in range(1,len(lines)):
+        for i in range(1, len(lines)):
             grid.append([c for c in lines[i]])
         return Tile(id_, grid)
 
     def __str__(self):
         return f'{self.id}'
 
-    def print(self):
-        for j in range(self.size):
-            print(''.join(self.grid[j]))
 
-def parse_input(filename):
-    blobs = open(filename).read().split('\n\n')
-    tiles = []
-    for data in blobs:
-        tiles.append(Tile.from_raw_data(data))
-    return tiles
+def get_neighbors(x, y, image):
+    # left, right, top, bottom
+    deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    neighbors = []
+    for m, n in deltas:
+        neighb = None
+        try:
+            neighb = image[(x + m, y + n)]
+        except KeyError:
+            pass
+        neighbors.append(neighb)
+    return neighbors
+
 
 class ImageAssembler:
 
@@ -127,9 +139,9 @@ class ImageAssembler:
     def interior(self):
         return [k for k, v in self.tile_map.items() if len(v) == 8]
 
-
-    def _preprocess_tiles(self, tiles):
-        tile_sides = {t: set([side for orientation in t.orientations for side in orientation.sides  ]) for t in tiles}
+    @staticmethod
+    def _preprocess_tiles(tiles):
+        tile_sides = {t: set([side for orientation in t.orientations for side in orientation.sides]) for t in tiles}
         tile_map = {}
         for tile in tiles:
             matching_sides = set()
@@ -149,6 +161,7 @@ class ImageAssembler:
             correct = False
             for _ in tile_to_orient.orientations:
                 correct = True
+                # Avert thy gaze...
                 if any(sides_to_match):
                     if sides_to_match[0] and tile_to_orient.left not in matching:
                         correct = False
@@ -175,35 +188,20 @@ class ImageAssembler:
                         correct = False
                     if surroundings[3] and tile_to_orient.bottom != surroundings[3].top:
                         correct = False
-                    
+
                 if correct:
                     break
             return correct
 
-        #image = [[None for _ in range(self.size)] for _ in range(self.size)]
+        # Put image together starting with top-left corner.
         image = {}
-        def get_neighbors(x, y):
-            # left, right, top, bottom
-            deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-            neighbors = []
-            for m, n in deltas:
-                neighb = None
-                try:
-                    neighb = image[(x+m, y+n)]
-                except KeyError:
-                    pass
-                neighbors.append(neighb)
-            return neighbors
-
-
-        #while any(tile is None for row in image for tile in row):
-        while len(image) < self.size**2:
+        while len(image) < self.size ** 2:
             restart = False
             for i in range(self.size):
                 for j in range(self.size):
                     if (i, j) in image:
                         continue
-                    surrounding_tiles = get_neighbors(i, j)
+                    surrounding_tiles = get_neighbors(i, j, image)
                     sides_to_match = [False, False, False, False]
                     tiles = set()
                     if surrounding_tiles.count(None) == 4:
@@ -211,13 +209,13 @@ class ImageAssembler:
                         tiles |= set(self.corners)
                         sides_to_match = [False, True, False, True]
                     if surrounding_tiles.count(None) == 2:
-                        tiles |=set(self.corners)
-                    if surrounding_tiles.count(None) in [1,2,3]:
-                        tiles|=set(self.borders)
-                    if surrounding_tiles.count(None) in [0,2,3]:
-                        tiles|=set(self.interior)
-                    if (i,j) in [(0,0),(0,self.size-1),(self.size-1,0),(self.size-1, self.size-1)]:
-                        tiles|=set(self.corners)
+                        tiles |= set(self.corners)
+                    if surrounding_tiles.count(None) in [1, 2, 3]:
+                        tiles |= set(self.borders)
+                    if surrounding_tiles.count(None) in [0, 2, 3]:
+                        tiles |= set(self.interior)
+                    if (i, j) in [(0, 0), (0, self.size - 1), (self.size - 1, 0), (self.size - 1, self.size - 1)]:
+                        tiles |= set(self.corners)
 
                     potential_tiles = []
                     for potential_tile in tiles:
@@ -225,7 +223,7 @@ class ImageAssembler:
                             potential_tiles.append(potential_tile)
                     if potential_tiles and len(potential_tiles) == 1 or set(potential_tiles) == set(self.corners):
                         potential_tile = potential_tiles[0]
-                        image[(i,j)] = potential_tile
+                        image[(i, j)] = potential_tile
                         del self.tile_map[potential_tile]
                         restart = True
                         break
@@ -233,69 +231,52 @@ class ImageAssembler:
                         break
                 if restart:
                     break
-        # Now we have our image with each tile shrunk by one
-        # Now we stitch into one big tile
+        # We have our array of tiles, each shrunk by one.
+        # Now we stitch into one big grid.
         for key, value in image.items():
             image[key] = Tile(value.id, value.shrink(value.grid, 1))
         full_grid = []
-        tile_size = image[(0,0)].size
+        tile_size = image[(0, 0)].size
         for y in range(self.size):
             full_grid += [[] for _ in range(tile_size)]
             for x in range(self.size):
-                tile = image[(x,y)]
+                tile = image[(x, y)]
                 for j in range(tile_size):
-                    full_grid[y*tile_size+j] += tile.grid[j]
-
-
-
-
-
+                    full_grid[y * tile_size + j] += tile.grid[j]
+        # Create one big tile so we can use our orientation helper methods.
         ret = Tile(-1, full_grid)
         return ret
-                        
 
 
-def calc_water_roughness(image):
+def sea_monster_data():
     sea_monster = [
-    [c for c in '.#.#...#.###...#.##.O#..'],
-    [c for c in '#.O.##.OO#.#.OO.##.OOO##'],
-    [c for c in '..#O.#O#.O##O..O.#O##.##'],
-        ]
-    start_x, start_y = 2, 1
-
+        '                    #   ',
+        '  #    ##    ##    ###  ',
+        '   #  #  #  #  #  #     ',
+    ]
+    num_hashes_in_sea_monster = sum([line.count('#') for line in sea_monster])
+    sm_x, sm_y = 2, 1
     deltas = []
     for j in range(len(sea_monster)):
         for i in range(len(sea_monster[j])):
-            if sea_monster[j][i] == 'O':
-                deltas.append((i-start_x, j-start_y))
-    # deltas = [
-    #     (0,0),
-    #     (18,-1),
-    #     (5, 0),
-    #     (6, 0),
-    #     (11, 0),
-    #     (12, 0),
-    #     (17, 0),
-    #     (18, 0),
-    #     (19, 0),
-    #     (1, 1),
-    #     (4, 1),
-    #     (7, 1),
-    #     (10, 1),
-    #     (13, 1),
-    #     (16, 1),
-    # ]
-    for orientation in image.orientations:
+            if sea_monster[j][i] == '#':
+                deltas.append((i - sm_x, j - sm_y))
+    return deltas, num_hashes_in_sea_monster
+
+
+def calc_water_roughness(full_image):
+    deltas, num_hashes_in_sea_monster = sea_monster_data()
+    for orientation in full_image.orientations:
         grid = orientation.grid
         sea_monsters = 0
-        for j in range(image.size):
-            for i in range(image.size):
+        for j in range(full_image.size):
+            for i in range(full_image.size):
                 if grid[j][i] != '#':
                     continue
                 for m, n in deltas:
                     x = i + m
                     y = j + n
-                    if x<0 or y <0 or x>=orientation.size or y>= orientation.size:
+                    if x < 0 or y < 0 or x >= orientation.size or y >= orientation.size:
                         break
                     ch = grid[y][x]
                     if ch != '#':
@@ -304,12 +285,11 @@ def calc_water_roughness(image):
                     sea_monsters += 1
         if sea_monsters > 0:
             num_hashes = sum([line.count('#') for line in grid])
-            num_hashes -= sea_monsters*15
+            num_hashes -= sea_monsters * num_hashes_in_sea_monster
             return num_hashes
 
 
 if __name__ == '__main__':
-
     puzzle_input = parse_input('day_20.in')
     sample_input = parse_input('day_20.in.sample')
 
@@ -321,8 +301,8 @@ if __name__ == '__main__':
     print(reduce(lambda x, y: x * y, [tile.id for tile in puzzle_ia.corners]))
 
     # Part 2
-    image = sample_ia.assemble()
-    assert calc_water_roughness(image) == 273
+    assembled_image = sample_ia.assemble()
+    assert calc_water_roughness(assembled_image) == 273
 
-    image = puzzle_ia.assemble()
-    print(calc_water_roughness(image))
+    assembled_image = puzzle_ia.assemble()
+    print(calc_water_roughness(assembled_image))
