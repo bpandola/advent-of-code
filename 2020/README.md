@@ -1,9 +1,12 @@
 # Advent of Code 2020
 
+
+
+
 ## Day 1: Report Repair
 
 Oh, man, just by sheer luck I had my input parser already set up for a list 
-of numbers and I had the answer in under a minute, but... the site went down!
+of numbers, and I had the answer in under a minute, but... the site went down!
 Well, that's a bummer.  I had the right solution on the first try for both 
 parts, so I had that going for me, which is nice. (Yes, I realize this was a 
 dead simple Day 1 puzzle, but I gotta get my wins where I can.)
