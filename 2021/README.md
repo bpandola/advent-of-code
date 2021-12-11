@@ -73,5 +73,23 @@ Thankfully it took me only a couple of minutes to see that my diagonal
 line drawing code was off-by-one and not rendering the final point.
 
 I'm starting to remember the aggravation and self-loathing I felt last
-year when making dumb mistakes or struggling with an implementation and
-I'm only on Day 5...
+year when making dumb mistakes or struggling with an implementation. 
+
+And it's only on Day 5...
+
+## Day 6: Lanternfish
+
+Oh, I love Advent of Code.  This was the classic Part 1 is an easy simulation
+for `x` number of ticks and Part 2 is just simulate it for a few more ticks
+and watch your naive implementation bring your CPU to its knees and never 
+complete...
+
+I actually had a hunch that it would go like this and thought about doing 
+something a bit more clever for Part 1 in anticipation of Part 2, but I
+ended up just going the naive, brute force way for Part 1.
+
+Part 2 was as expected, and I immediately came up with the idea to only simulate
+each fish with a different age and just keep track of their counts.  This took
+only a few minutes to implement, and it was blazingly fast for both parts.
+
+I loved this puzzle, and I was very pleased with my solution.
