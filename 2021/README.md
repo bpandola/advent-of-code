@@ -44,5 +44,20 @@ try.  My streak of no wrong answers continues!
 I love the binary stuff and thinking about bits--I used an XOR too--even though
 you didn't really have to understand bits at a low level to get the answer.
 
+## Day 4: Giant Squid
 
+This was a good one.  I spent a bit of time thinking about how to represent
+the bingo board in code.  I knew I needed a class with various methods for 
+`.score()`, `.has_a_bingo()`, etc.  My original thoughts had me storing
+multiple hash maps of grid-positions-to-numbers and numbers-to-grid-positions,
+but then I realized I could just take the raw grid data and generate all the
+winning combinations and use set operations with the currently drawn numbers
+to easily determine if a board had a bingo, and that ended up working quite
+well.
 
+It took me a bit of time to get everything coded up--I doubt I would
+have been a contender--but everything worked on the first try, which was
+very satisfying.  Nice little twist on Part 2, but my code was architected 
+in such a way that I had the answer in just a couple more minutes time.
+
+Still no wrong answers!
