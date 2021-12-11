@@ -93,3 +93,18 @@ each fish with a different age and just keep track of their counts.  This took
 only a few minutes to implement, and it was blazingly fast for both parts.
 
 I loved this puzzle, and I was very pleased with my solution.
+
+## Day 7: The Treachery of Whales
+
+I feel like I might've had a chance at maybe ranking in the top 1000
+or so, had I done this one live, as I was able to complete it quite 
+quickly (for me).
+
+It was pretty straightforward.  I was a little worried that it would
+be too slow for Part 2, but it did complete with the right answer in
+about 20 seconds.  I'm sure there's some way to make it faster, but
+I was too happy to have completed the whole thing in about 5 minutes
+to work on it any further.
+
+I still have 4 puzzles to catch up to current live day (11th).
+
