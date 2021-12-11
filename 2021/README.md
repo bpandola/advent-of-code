@@ -61,3 +61,17 @@ very satisfying.  Nice little twist on Part 2, but my code was architected
 in such a way that I had the answer in just a couple more minutes time.
 
 Still no wrong answers!
+
+## Day 5: Hydrothermal Venture
+
+Well, I did fine on Part 1 and then got totally tripped up on Part 2 
+trying to plot a diagonal line.  So embarrassing.  My line drawing code
+was terribly off the mark, and it took way too long to figure out.
+Unfortunately, once I did figure it out, I got the right answer for
+the sample input but got my first wrong answer for my puzzle input.
+Thankfully it took me only a couple of minutes to see that my diagonal
+line drawing code was off-by-one and not rendering the final point.
+
+I'm starting to remember the aggravation and self-loathing I felt last
+year when making dumb mistakes or struggling with an implementation and
+I'm only on Day 5...
