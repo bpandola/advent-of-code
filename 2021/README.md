@@ -108,3 +108,35 @@ to work on it any further.
 
 I still have 4 puzzles to catch up to current live day (11th).
 
+## Day 8: Seven Segment Search
+
+This was another classic AOC construct: super simple Part 1 buried in tons
+of extraneous text, plus a vexing brute force solution for Part 2, with the
+added twist that the decoded patterns didn't necessarily match the output 
+directly (you needed to account for `abc` == `bac` == `acb`).
+
+So I read and re-read all the instructions on Part 1 before finally realizing
+that all it was asking for was the count of patterns in the input with a unique
+number of characters.  I think it took me less than a minute to code it up
+as a simple list comprehension from the input data.
+
+Part 2 was quite perplexing.  It required trying to decode seven-segment
+display patterns to determine which pattern corresponded with each digit
+(0-9).  I went off the rails initially, manually constructing hashmaps of
+digits-to-segments and then trying to algorithmically go through the patterns
+and analyze the segments until I was able to ascertain each digit, but I
+gave up thinking there had to be a better way.
+
+In the end, after pacing around my apartment for a while, it occurred to me
+that I could use the information from the unique patterns to positively identify
+each of the additional digits one after another.  It actually ended up being
+rather simple, if a bit ugly, to code.
+
+Once final twist (because the AOC creator is so clever) was that the patterns
+didn't match the output exactly.  I thought I could just use a set for comparison, 
+but sets are not hashable in Python, so couldn't be used as a dictionary key. A
+quick Google search led me to the `frozenset` built-in, which can be used as a
+dictionary key, and allowed me to directly look up the digit in my hash table
+regardless of the segment ordering.
+
+Fantastic puzzle.  Both answers right first try!
