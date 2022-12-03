@@ -30,5 +30,8 @@ once I finally got all my lookup tables properly sorted out.
 
 ## Day 3: Rucksack Reorganization
 
-
+I decided to do this one as fast as I could, not bothering with breaking out methods
+or picking descriptive variable names.  I realized pretty quickly that using Python
+sets would make this one trivial, and it did.  I got both parts right on the first try
+and eventually cleaned things up a bit.  Simple and fun, this one.
 
