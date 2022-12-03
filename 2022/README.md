@@ -28,5 +28,7 @@ second day!), but I'm happy with the cleaned up code.  Already broke my correct
 answer streak (how embarrassing!) but I did get Part 2 correct on the first try
 once I finally got all my lookup tables properly sorted out.
 
+## Day 3: Rucksack Reorganization
+
 
 
