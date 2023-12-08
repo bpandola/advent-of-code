@@ -2,6 +2,7 @@ def parse_input(filename):
     lines = open(filename).read().split('\n')
     return lines
 
+
 def parse_calibration_values_v1(blursed_inputs):
     values = []
     for line in blursed_inputs:
@@ -9,12 +10,13 @@ def parse_calibration_values_v1(blursed_inputs):
         for character in line:
             if character.isdigit():
                 digits.append(character)
-        value = int(str(digits[0]+str(digits[-1])))
+        value = int(str(digits[0]) + str(digits[-1]))
         values.append(value)
     return values
 
+
 def parse_calibration_values_v2(blursed_inputs):
-    words_to_digits = {
+    word_to_num = {
         'one': 1,
         'two': 2,
         'three': 3,
@@ -34,10 +36,10 @@ def parse_calibration_values_v2(blursed_inputs):
             if character.isdigit():
                 digits.append(character)
                 break
-            for word in words_to_digits:
+            for word in word_to_num:
                 found_word = False
                 if line[index:].find(word) == 0:
-                    digits.append(words_to_digits[word])
+                    digits.append(word_to_num[word])
                     found_word = True
                 if found_word:
                     break
@@ -49,22 +51,19 @@ def parse_calibration_values_v2(blursed_inputs):
             if character.isdigit():
                 digits.append(character)
                 break
-            for word in words_to_digits:
+            for word in word_to_num:
                 found_word = False
-                if line[-(index+1):].find(word) == 0:
-                    digits.append(words_to_digits[word])
+                if line[-(index + 1):].find(word) == 0:
+                    digits.append(word_to_num[word])
                     found_word = True
                 if found_word:
                     break
             if len(digits) == 2:
                 break
-
-
-
-
-        value = int(str(digits[0])+str(digits[1]))
+        value = int(str(digits[0]) + str(digits[1]))
         values.append(value)
     return values
+
 
 if __name__ == '__main__':
     puzzle_input = parse_input('day_01.in')
